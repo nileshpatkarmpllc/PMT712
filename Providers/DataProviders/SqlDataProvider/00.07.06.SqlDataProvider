@@ -1,0 +1,5044 @@
+﻿/************************************************************/
+/*****              SqlDataProvider                     *****/
+/*****                                                  *****/
+/*****                                                  *****/
+/***** Note: To manually execute this script you must   *****/
+/*****       perform a search and replace operation     *****/
+/*****       for {databaseOwner} and {objectQualifier}  *****/
+/*****                                                  *****/
+/************************************************************/
+
+
+
+/************************************************************/
+/*****              SqlDataProvider                     *****/
+/************************************************************/
+
+if not exists (select * from dbo.sysobjects where id = object_id(N'PMT_Agencies') and OBJECTPROPERTY(id, N'IsTable') = 1)
+	BEGIN
+		CREATE TABLE PMT_Agencies
+		(
+			[Id] [int] NOT NULL IDENTITY(1, 1),
+			[PortalId] [int] NOT NULL,
+			[AgencyName] nvarchar(255),
+			[Address1] nvarchar(255),
+			[Address2] nvarchar(255),
+			[City] nvarchar(255),
+			[State] nvarchar(20),
+			[Zip] nvarchar(20),
+			[Country] nvarchar(255),
+			[Phone] nvarchar(30),
+			[Fax] nvarchar(30),
+			[ClientType] int,
+			[Status] bit,
+			[CustomerReference] nvarchar(255),
+			[CreatedById] [int] NOT NULL,
+			[DateCreated] DateTime,
+			[LastModifiedById] [int] NOT NULL,
+			[LastModifiedDate] DateTime
+		)
+	END
+GO
+
+if col_length((N'PMT_Agencies'),'AttentionLine') is null
+    BEGIN
+        ALTER TABLE PMT_Agencies ADD AttentionLine nvarchar(255)
+    END
+GO
+
+if not exists (select * from dbo.sysobjects where id = object_id(N'PMT_Advertisers') and OBJECTPROPERTY(id, N'IsTable') = 1)
+	BEGIN
+		CREATE TABLE PMT_Advertisers
+		(
+			[Id] [int] NOT NULL IDENTITY(1, 1),
+			[PortalId] [int] NOT NULL,
+			[Agency] [int],
+			[Carrier] [int],
+			[Freight] [int],
+			[CarrierNumber] nvarchar(255),
+			[AdvertiserName] nvarchar(255),
+			[Address1] nvarchar(255),
+			[Address2] nvarchar(255),
+			[City] nvarchar(255),
+			[State] nvarchar(20),
+			[Zip] nvarchar(20),
+			[Country] nvarchar(255),
+			[Phone] nvarchar(30),
+			[Fax] nvarchar(30),
+			[ClientType] int,
+			[CustomerReference] nvarchar(255),
+			[CreatedById] [int] NOT NULL,
+			[DateCreated] DateTime,
+			[LastModifiedById] [int] NOT NULL,
+			[LastModifiedDate] DateTime
+		)
+	END
+GO
+
+if col_length((N'PMT_Advertisers'),'Agency') is not null
+    BEGIN
+        ALTER TABLE PMT_Advertisers Drop Column Agency
+    END
+GO
+
+if col_length((N'PMT_Advertisers'),'QuickbooksListId') is null
+    BEGIN
+        ALTER TABLE PMT_Advertisers ADD QuickbooksListId nvarchar(255)
+    END
+GO
+
+if col_length((N'PMT_Advertisers'),'QuickbooksEditSequence') is null
+    BEGIN
+        ALTER TABLE PMT_Advertisers ADD QuickbooksEditSequence nvarchar(255)
+    END
+GO
+
+if col_length((N'PMT_Advertisers'),'QuickbooksErrNum') is null
+    BEGIN
+        ALTER TABLE PMT_Advertisers ADD QuickbooksErrNum nvarchar(255)
+    END
+GO
+
+if col_length((N'PMT_Advertisers'),'QuickbooksErrMsg') is null
+    BEGIN
+        ALTER TABLE PMT_Advertisers ADD QuickbooksErrMsg nvarchar(255)
+    END
+GO
+
+if not exists (select * from dbo.sysobjects where id = object_id(N'PMT_AdvertiserAgencies') and OBJECTPROPERTY(id, N'IsTable') = 1)
+	BEGIN
+		CREATE TABLE PMT_AdvertiserAgencies
+		(
+			[AdvertiserId] [int],
+			[AgencyId] [int]
+		)
+	END
+GO
+
+if not exists (select * from dbo.sysobjects where id = object_id(N'PMT_MasterItemAgencies') and OBJECTPROPERTY(id, N'IsTable') = 1)
+	BEGIN
+		CREATE TABLE PMT_MasterItemAgencies
+		(
+			[MasterItemId] [int],
+			[AgencyId] [int]
+		)
+	END
+GO
+
+if not exists (select * from dbo.sysobjects where id = object_id(N'PMT_Markets') and OBJECTPROPERTY(id, N'IsTable') = 1)
+	BEGIN
+		CREATE TABLE PMT_Markets
+		(
+			[Id] [int] NOT NULL IDENTITY(1, 1),
+			[PortalId] [int],
+			[MarketName] nvarchar(255),
+			[Description] text,
+			[CreatedById] [int],
+			[DateCreated] DateTime,
+			[LastModifiedById] [int],
+			[LastModifiedDate] DateTime
+		)
+	END
+GO
+
+if col_length((N'PMT_Markets'),'ParentId') is null
+    BEGIN
+        ALTER TABLE PMT_Markets ADD ParentId int
+    END
+GO
+
+if not exists (select * from dbo.sysobjects where id = object_id(N'PMT_Stations') and OBJECTPROPERTY(id, N'IsTable') = 1)
+	BEGIN
+		CREATE TABLE PMT_Stations
+		(
+			[Id] [int] NOT NULL IDENTITY(1, 1),
+			[PortalId] [int],
+			[MarketId] [int],
+			[StationName] nvarchar(255),
+			[StationContact] nvarchar(255),
+			[CallLetter] nvarchar(255),
+			[MediaType] [int],
+			[TapeFormat] nvarchar(255),
+			[Address1] nvarchar(255),
+			[Address2] nvarchar(255),
+			[City] nvarchar(255),
+			[State] nvarchar(255),
+			[Zip] nvarchar(255),
+			[Country] nvarchar(255),
+			[Phone] nvarchar(255),
+			[Fax] nvarchar(255),
+			[Email] nvarchar(255),
+			[SpecialInstructions] text,
+			[DeliveryMethods] nvarchar(255),
+			[Online] bit,
+			[Status] bit,
+			[CreatedById] [int],
+			[DateCreated] DateTime,
+			[LastModifiedById] [int],
+			[LastModifiedDate] DateTime
+		)
+	END
+GO
+
+if col_length((N'PMT_Stations'),'AttentionLine') is null
+    BEGIN
+        ALTER TABLE PMT_Stations ADD AttentionLine nvarchar(255)
+    END
+GO
+
+if col_length((N'PMT_Stations'),'ProgramFormat') is null
+    BEGIN
+        ALTER TABLE PMT_Stations ADD ProgramFormat nvarchar(255)
+    END
+GO
+
+if col_length((N'PMT_Stations'),'AdDeliveryCallLetters') is null
+    BEGIN
+        ALTER TABLE PMT_Stations ADD AdDeliveryCallLetters nvarchar(255)
+    END
+GO
+
+if col_length((N'PMT_Stations'),'OTSMHDCallLetters') is null
+    BEGIN
+        ALTER TABLE PMT_Stations ADD OTSMHDCallLetters nvarchar(255)
+    END
+GO
+
+if col_length((N'PMT_Stations'),'OTSMSDCallLetters') is null
+    BEGIN
+        ALTER TABLE PMT_Stations ADD OTSMSDCallLetters nvarchar(255)
+    END
+GO
+
+if col_length((N'PMT_Stations'),'JavelinCallLetters') is null
+    BEGIN
+        ALTER TABLE PMT_Stations ADD JavelinCallLetters nvarchar(255)
+    END
+GO
+
+if col_length((N'PMT_Stations'),'backupRequired') is null
+    BEGIN
+        ALTER TABLE PMT_Stations ADD backupRequired bit
+    END
+GO
+
+if not exists (select * from dbo.sysobjects where id = object_id(N'PMT_ClientTypes') and OBJECTPROPERTY(id, N'IsTable') = 1)
+	BEGIN
+		CREATE TABLE PMT_ClientTypes
+		(
+			[Id] [int] NOT NULL IDENTITY(1, 1),
+			[PortalId] [int] NOT NULL,
+			[ClientType] nvarchar(255),
+			[CreatedById] [int] NOT NULL,
+			[DateCreated] DateTime,
+			[LastModifiedById] [int] NOT NULL,
+			[LastModifiedDate] DateTime
+		)
+	END
+GO
+
+if not exists (select * from dbo.sysobjects where id = object_id(N'PMT_CarrierTypes') and OBJECTPROPERTY(id, N'IsTable') = 1)
+	BEGIN
+		CREATE TABLE PMT_CarrierTypes
+		(
+			[Id] [int] NOT NULL IDENTITY(1, 1),
+			[PortalId] [int] NOT NULL,
+			[CarrierType] nvarchar(255),
+			[CreatedById] [int] NOT NULL,
+			[DateCreated] DateTime,
+			[LastModifiedById] [int] NOT NULL,
+			[LastModifiedDate] DateTime
+		)
+	END
+GO
+
+if not exists (select * from dbo.sysobjects where id = object_id(N'PMT_FreightTypes') and OBJECTPROPERTY(id, N'IsTable') = 1)
+	BEGIN
+		CREATE TABLE PMT_FreightTypes
+		(
+			[Id] [int] NOT NULL IDENTITY(1, 1),
+			[PortalId] [int] NOT NULL,
+			[FreightType] nvarchar(255),
+			[CreatedById] [int] NOT NULL,
+			[DateCreated] DateTime,
+			[LastModifiedById] [int] NOT NULL,
+			[LastModifiedDate] DateTime
+		)
+	END
+GO
+
+if not exists (select * from dbo.sysobjects where id = object_id(N'PMT_DeliveryMethods') and OBJECTPROPERTY(id, N'IsTable') = 1)
+	BEGIN
+		CREATE TABLE PMT_DeliveryMethods
+		(
+			[Id] [int] NOT NULL IDENTITY(1, 1),
+			[PortalId] [int] NOT NULL,
+			[DeliveryMethod] nvarchar(255),
+			[CreatedById] [int] NOT NULL,
+			[DateCreated] DateTime,
+			[LastModifiedById] [int] NOT NULL,
+			[LastModifiedDate] DateTime
+		)
+	END
+GO
+
+if col_length((N'PMT_DeliveryMethods'),'Priority') is null
+    BEGIN
+        ALTER TABLE PMT_DeliveryMethods ADD Priority nvarchar(255)
+    END
+GO
+
+if not exists (select * from dbo.sysobjects where id = object_id(N'PMT_TapeFormats') and OBJECTPROPERTY(id, N'IsTable') = 1)
+	BEGIN
+		CREATE TABLE PMT_TapeFormats
+		(
+			[Id] [int] NOT NULL IDENTITY(1, 1),
+			[PortalId] [int] NOT NULL,
+			[TapeFormat] nvarchar(255),
+			[Printer] nvarchar (10),
+			[Label] nvarchar (10),
+			[CreatedById] [int] NOT NULL,
+			[DateCreated] DateTime,
+			[LastModifiedById] [int] NOT NULL,
+			[LastModifiedDate] DateTime
+		)
+	END
+GO
+
+if col_length((N'PMT_TapeFormats'),'Weight') is null
+    BEGIN
+        ALTER TABLE PMT_TapeFormats ADD Weight float
+    END
+GO
+
+if col_length((N'PMT_TapeFormats'),'MaxPerPak') is null
+    BEGIN
+        ALTER TABLE PMT_TapeFormats ADD MaxPerPak int
+    END
+GO
+
+if not exists (select * from dbo.sysobjects where id = object_id(N'PMT_StationGroups') and OBJECTPROPERTY(id, N'IsTable') = 1)
+	BEGIN
+		CREATE TABLE PMT_StationGroups
+		(
+			[Id] [int] NOT NULL IDENTITY(1, 1),
+			[PortalId] [int] NOT NULL,
+			[StationGroupName] nvarchar(255),
+			[CreatedById] [int] NOT NULL,
+			[DateCreated] DateTime,
+			[LastModifiedById] [int] NOT NULL,
+			[LastModifiedDate] DateTime
+		)
+	END
+GO
+
+if col_length((N'PMT_StationGroups'),'Description') is null
+    BEGIN
+        ALTER TABLE PMT_StationGroups ADD Description text
+    END
+GO
+
+if col_length((N'PMT_StationGroups'),'AgencyId') is null
+    BEGIN
+        ALTER TABLE PMT_StationGroups ADD AgencyId int
+    END
+GO
+
+if not exists (select * from dbo.sysobjects where id = object_id(N'PMT_StationsInGroup') and OBJECTPROPERTY(id, N'IsTable') = 1)
+	BEGIN
+		CREATE TABLE PMT_StationsInGroup
+		(
+			[Id] [int] NOT NULL IDENTITY(1, 1),
+			[PortalId] [int] NOT NULL,
+			[StationId] [int] NOT NULL,
+			[StationGroupId] [int] NOT NULL
+		)
+	END
+GO
+
+if not exists (select * from dbo.sysobjects where id = object_id(N'PMT_Labels') and OBJECTPROPERTY(id, N'IsTable') = 1)
+	BEGIN
+		CREATE TABLE PMT_Labels
+		(
+		[Id] [int] NOT NULL IDENTITY(1, 1),
+		[PortalId] [int] NOT NULL,
+		[UserType] nvarchar(255),
+		[UserId] int,
+		[CampaignId] int,
+		[AgencyName] nvarchar(255),
+		[AgencyId] int,
+		[AdvertiserName] nvarchar(255),
+		[AdvertiserId] int,
+		[TapeFormat] int,
+		[Title] nvarchar(255),
+		[Description] text,
+		[ISCICode] nvarchar(255),
+		[PMTMediaId] nvarchar(255),
+		[MediaLength] nvarchar(255),
+		[Standard] nvarchar(50),
+		[LabelNumber] bigint,
+		[CampaignMediaId] int,
+		[Notes] text,
+		[CreatedById] [int] NOT NULL,
+		[DateCreated] DateTime,
+		[LastModifiedById] [int] NOT NULL,
+		[LastModifiedDate] DateTime
+		)
+	END
+GO
+
+if not exists (select * from dbo.sysobjects where id = object_id(N'PMT_MasterItems') and OBJECTPROPERTY(id, N'IsTable') = 1)
+	BEGIN
+		CREATE TABLE PMT_MasterItems
+		(
+			[Id] [int] NOT NULL IDENTITY(1, 1),
+			[PortalId] [int],
+			[Filename] nvarchar(255),
+			[AdvertiserId] int,
+			[Agencies] nvarchar(255),
+			[Title] nvarchar(255),
+			[MediaType] int,
+			[Encode] int,
+			[Standard] nvarchar(100),
+			[Length] nvarchar(100),
+			[CustomerId] nvarchar(255),
+			[PMTMediaId] nvarchar(255),
+			[Reel] int,
+			[TapeCode] nvarchar(255),
+			[Position] int,
+			[VaultId] nvarchar(255),
+			[Location] nvarchar(255),
+			[Comment] text,
+			[ClosedCaptioned] bit,
+			[CustomerReference] nvarchar(255),
+			[CreatedById] [int],
+			[DateCreated] DateTime,
+			[LastModifiedById] [int],
+			[LastModifiedDate] DateTime
+		)
+	END
+GO
+
+if col_length((N'PMT_MasterItems'),'BillToId') is null
+    BEGIN
+        ALTER TABLE PMT_MasterItems ADD BillToId int
+    END
+GO
+
+if col_length((N'PMT_MasterItems'),'isApproved') is null
+    BEGIN
+        ALTER TABLE PMT_MasterItems ADD isApproved bit
+    END
+GO
+
+if col_length((N'PMT_MasterItems'),'Agencies') is not null
+    BEGIN
+        ALTER TABLE PMT_MasterItems Drop Column Agencies
+    END
+GO
+
+if col_length((N'PMT_MasterItems'),'CheckListForm') is null
+    BEGIN
+        ALTER TABLE PMT_MasterItems ADD CheckListForm varchar(MAX)
+    END
+GO
+
+if col_length((N'PMT_MasterItems'),'hasChecklist') is null
+    BEGIN
+        ALTER TABLE PMT_MasterItems ADD hasChecklist bit
+    END
+GO
+
+if not exists (select * from dbo.sysobjects where id = object_id(N'PMT_UsersInAgencies') and OBJECTPROPERTY(id, N'IsTable') = 1)
+	BEGIN
+		CREATE TABLE PMT_UsersInAgencies
+		(
+			[UserId] [int],
+			[AgencyId] [int]
+		)
+	END
+GO
+
+if not exists (select * from dbo.sysobjects where id = object_id(N'PMT_UsersInAdvertisers') and OBJECTPROPERTY(id, N'IsTable') = 1)
+	BEGIN
+		CREATE TABLE PMT_UsersInAdvertisers
+		(
+			[UserId] [int],
+			[AdvertiserId] [int]
+		)
+	END
+GO
+
+if not exists (select * from dbo.sysobjects where id = object_id(N'PMT_LibraryItems') and OBJECTPROPERTY(id, N'IsTable') = 1)
+	BEGIN
+		CREATE TABLE PMT_LibraryItems
+		(
+			[Id] [int] NOT NULL IDENTITY(1, 1),
+			[PortalId] [int],
+			[AdvertiserId] int,
+			[AgencyId] int,
+			[ISCICode] nvarchar(255),
+			[Filename] nvarchar(255),
+			[Title] nvarchar(255),
+			[ProductDescription] nvarchar(MAX),
+			[MediaLength] nvarchar(100),
+			[MediaType] nvarchar(100),
+			[Encode] nvarchar(100),
+			[Standard] nvarchar(100),
+			[CustomerReference] nvarchar(255),
+			[PMTMediaId] nvarchar(255),
+			[MasterId] int,
+			[DateCreated] DateTime,
+			[MediaIndex] int,
+			[Reel] int,
+			[TapeCode] nvarchar(255),
+			[Position] int,
+			[VaultId] nvarchar(255),
+			[Location] nvarchar(255),
+			[Status] nvarchar(255),
+			[Comment] text,
+			[ClosedCaptioned] nvarchar(255),
+			[CreatedById] [int],
+			[LastModifiedById] [int],
+			[LastModifiedDate] DateTime
+		)
+	END
+GO
+
+if not exists (select * from dbo.sysobjects where id = object_id(N'PMT_Services') and OBJECTPROPERTY(id, N'IsTable') = 1)
+	BEGIN
+		CREATE TABLE PMT_Services
+		(
+			[Id] [int] NOT NULL IDENTITY(1, 1),
+			[PortalId] [int],
+			[ServiceName] nvarchar(255),
+			[BillingCode] nvarchar(255),
+			[CreatedById] [int],
+			[DateCreated] DateTime,
+			[LastModifiedById] [int],
+			[LastModifiedDate] DateTime
+		)
+	END
+GO
+
+if not exists (select * from dbo.sysobjects where id = object_id(N'PMT_WorkOrders') and OBJECTPROPERTY(id, N'IsTable') = 1)
+	BEGIN
+		CREATE TABLE PMT_WorkOrders
+		(
+			[Id] [int] NOT NULL IDENTITY(1, 1),
+			[PortalId] [int],
+			[Description] nvarchar(MAX),
+			[PONumber] nvarchar(255),
+			[InvoiceNumber] nvarchar(255),
+			[AdvertiserId] [int],
+			[AgencyId] [int],
+			[BillToId] [int],
+            [Notes] nvarchar(MAX),
+			[CreatedById] [int],
+			[DateCreated] DateTime,
+			[LastModifiedById] [int],
+			[LastModifiedDate] DateTime
+		)
+	END
+GO
+
+if col_length((N'PMT_WorkOrders'),'AssignedTo') is null
+    BEGIN
+        ALTER TABLE PMT_WorkOrders ADD AssignedTo int
+    END
+GO
+
+if col_length((N'PMT_WorkOrders'),'Status') is null
+    BEGIN
+        ALTER TABLE PMT_WorkOrders ADD Status nvarchar(255)
+    END
+GO
+
+if col_length((N'PMT_WorkOrders'),'Priority') is null
+    BEGIN
+        ALTER TABLE PMT_WorkOrders ADD Priority nvarchar(255)
+    END
+GO
+
+if not exists (select * from dbo.sysobjects where id = object_id(N'PMT_WorkOrderGroupStations') and OBJECTPROPERTY(id, N'IsTable') = 1)
+	BEGIN
+		CREATE TABLE PMT_WorkOrderGroupStations
+		(
+			[Id] [int] NOT NULL IDENTITY(1, 1),
+			[PortalId] [int],
+			[WOGroupId] [int],
+			[WorkOrderId] [int],
+			[StationId] [int],
+			[DeliveryMethodId] [int],
+			[ShippingMethodId] [int],
+			[PriorityId] [int],
+			[CreatedById] [int],
+			[DateCreated] DateTime,
+			[LastModifiedById] [int],
+			[LastModifiedDate] DateTime
+		)
+	END
+GO
+
+if col_length((N'PMT_WorkOrderGroupStations'),'DeliveryMethod') is null
+    BEGIN
+        ALTER TABLE PMT_WorkOrderGroupStations ADD DeliveryMethod nvarchar(255)
+    END
+GO
+
+if col_length((N'PMT_WorkOrderGroupStations'),'Quantity') is null
+    BEGIN
+        ALTER TABLE PMT_WorkOrderGroupStations ADD Quantity int
+    END
+GO
+
+if not exists (select * from dbo.sysobjects where id = object_id(N'PMT_WorkOrderGroups') and OBJECTPROPERTY(id, N'IsTable') = 1)
+	BEGIN
+		CREATE TABLE PMT_WorkOrderGroups
+		(
+			[Id] [int] NOT NULL IDENTITY(1, 1),
+			[PortalId] [int],
+			[WorkOrderId] [int],
+			[MasterId] [int],
+			[GroupName] nvarchar(255),
+			[Comments] nvarchar(MAX),
+			[CreatedById] [int],
+			[DateCreated] DateTime,
+			[LastModifiedById] [int],
+			[LastModifiedDate] DateTime
+		)
+	END
+GO
+
+if col_length((N'PMT_WorkOrderGroups'),'GroupType') is null
+    BEGIN
+        ALTER TABLE PMT_WorkOrderGroups ADD GroupType int
+    END
+GO
+
+if not exists (select * from dbo.sysobjects where id = object_id(N'PMT_WOGroupLibItems') and OBJECTPROPERTY(id, N'IsTable') = 1)
+	BEGIN
+		CREATE TABLE PMT_WOGroupLibItems
+		(
+			[WorkOrderGroupId] [int] Not Null,
+			[LibraryItemId] [int] Not Null,
+			PRIMARY KEY (WorkOrderGroupId, LibraryItemId)
+		)
+	END
+GO
+
+if not exists (select * from dbo.sysobjects where id = object_id(N'PMT_WOGroupServices') and OBJECTPROPERTY(id, N'IsTable') = 1)
+	BEGIN
+		CREATE TABLE PMT_WOGroupServices
+		(
+			[WorkOrderGroupId] [int] Not Null,
+			[ServiceId] [int] Not Null,
+			PRIMARY KEY (WorkOrderGroupId, ServiceId)
+		)
+	END
+GO
+
+if not exists (select * from dbo.sysobjects where id = object_id(N'PMT_WOComments') and OBJECTPROPERTY(id, N'IsTable') = 1)
+	BEGIN
+		CREATE TABLE PMT_WOComments
+		(
+			[Id] [int] NOT NULL IDENTITY(1, 1),
+			[PortalId] [int],
+			[WorkOrderId] int,
+			[WOTaskId] int,
+			[Comment] nvarchar(MAX),
+			[DisplayName] nvarchar(255),
+			[CreatedById] [int],
+			[DateCreated] DateTime,
+			[LastModifiedById] [int],
+			[LastModifiedDate] DateTime
+		)
+	END
+GO
+
+if col_length((N'PMT_WOComments'),'CommentType') is null
+    BEGIN
+        ALTER TABLE PMT_WOComments ADD CommentType int
+    END
+GO
+
+if not exists (select * from dbo.sysobjects where id = object_id(N'PMT_WOTasks') and OBJECTPROPERTY(id, N'IsTable') = 1)
+	BEGIN
+		CREATE TABLE PMT_WOTasks
+		(
+			[Id] [int] NOT NULL IDENTITY(1, 1),
+			[PortalId] [int],
+			[Description] nvarchar(MAX),
+			[WorkOrderId] int,
+			[WOGroupId] int,
+			[TaskType] int,
+			[MasterId] int,
+			[LibraryId] int,
+			[StationId] int,
+			[DeliveryMethodId] int,
+			[DeliveryMethod] nvarchar(255),
+			[DeliveryMethodResponse] nvarchar(MAX),
+			[DeliveryOrderId] nvarchar(255),
+			[DeliveryOrderDateCreated] DateTime,
+			[DeliveryStatus] nvarchar(255),
+			[isComplete] bit,
+			[isDeleted] bit,
+			[CreatedById] [int],
+			[DateCreated] DateTime,
+			[LastModifiedById] [int],
+			[LastModifiedDate] DateTime
+		)
+	END
+GO
+
+if col_length((N'PMT_WOTasks'),'QBCode') is null
+    BEGIN
+        ALTER TABLE PMT_WOTasks ADD QBCode nvarchar(255)
+    END
+GO
+
+if col_length((N'PMT_WOTasks'),'QBCodeId') is null
+    BEGIN
+        ALTER TABLE PMT_WOTasks ADD QBCodeId int
+    END
+GO
+
+if col_length((N'PMT_WOTasks'),'DeliveryOrderDateComplete') is null
+    BEGIN
+        ALTER TABLE PMT_WOTasks ADD DeliveryOrderDateComplete DateTime
+    END
+GO
+
+if col_length((N'PMT_WOTasks'),'Quantity') is null
+    BEGIN
+        ALTER TABLE PMT_WOTasks ADD Quantity int
+    END
+GO
+
+if not exists (select * from dbo.sysobjects where id = object_id(N'PMT_QBCodes') and OBJECTPROPERTY(id, N'IsTable') = 1)
+	BEGIN
+		CREATE TABLE PMT_QBCodes
+		(
+			[Id] [int] NOT NULL IDENTITY(1, 1),
+			[PortalId] [int] NOT NULL,
+			[Type] [int],
+			[QBCode] nvarchar(255),
+			[MediaType] [int],
+			[MinLength] nvarchar(255),
+			[MaxLength] nvarchar(255),
+			[CreatedById] [int] NOT NULL,
+			[DateCreated] DateTime,
+			[LastModifiedById] [int] NOT NULL,
+			[LastModifiedDate] DateTime
+		)
+	END
+GO
+
+if not exists (select * from dbo.sysobjects where id = object_id(N'PMT_QBCodeDeliveryMethods') and OBJECTPROPERTY(id, N'IsTable') = 1)
+	BEGIN
+		CREATE TABLE PMT_QBCodeDeliveryMethods
+		(
+			[QBCodeId] [int] Not Null,
+			[DeliveryMethodId] [int] Not Null,
+			PRIMARY KEY (QBCodeId, DeliveryMethodId)
+		)
+	END
+GO
+
+if not exists (select * from dbo.sysobjects where id = object_id(N'PMT_QBCodeTapeFormats') and OBJECTPROPERTY(id, N'IsTable') = 1)
+	BEGIN
+		CREATE TABLE PMT_QBCodeTapeFormats
+		(
+			[QBCodeId] [int] Not Null,
+			[TapeFormatId] [int] Not Null,
+			PRIMARY KEY (QBCodeId, TapeFormatId)
+		)
+	END
+GO
+
+if not exists (select * from dbo.sysobjects where id = object_id(N'PMT_QBCodeServices') and OBJECTPROPERTY(id, N'IsTable') = 1)
+	BEGIN
+		CREATE TABLE PMT_QBCodeServices
+		(
+			[QBCodeId] [int] Not Null,
+			[ServiceId] [int] Not Null,
+			PRIMARY KEY (QBCodeId, ServiceId)
+		)
+	END
+GO
+
+if not exists (select * from dbo.sysobjects where id = object_id(N'PMT_TaskQBCodes') and OBJECTPROPERTY(id, N'IsTable') = 1)
+	BEGIN
+		CREATE TABLE PMT_TaskQBCodes
+		(
+			[TaskId] [int] Not Null,
+			[QBCodeId] [int] Not Null,
+			PRIMARY KEY (TaskId, QBCodeId)
+		)
+	END
+GO
+
+if not exists (select * from dbo.sysobjects where id = object_id(N'PMT_Reports') and OBJECTPROPERTY(id, N'IsTable') = 1)
+	BEGIN
+		CREATE TABLE PMT_Reports
+		(
+			[Id] [int] NOT NULL IDENTITY(1, 1),
+			[PortalId] [int] NOT NULL,
+			[ReportName] nvarchar(255),
+			[ReportType] int,
+			[AdvertiserId] int,
+			[AgencyId] int,
+			[Keyword] nvarchar(255),
+			[Status] int,
+			[Frequency] nvarchar(25),
+			[FirstReportDate] DateTime,
+			[EmailTo] nvarchar(255),
+			[EmailMessage] nvarchar(MAX),
+			[isActive] bit,
+			[CustomerReference] nvarchar(255),
+			[CreatedById] [int] NOT NULL,
+			[DateCreated] DateTime,
+			[LastModifiedById] [int] NOT NULL,
+			[LastModifiedDate] DateTime
+		)
+	END
+GO
+
+if not exists (select * from dbo.sysobjects where id = object_id(N'PMT_EasySpotObjects') and OBJECTPROPERTY(id, N'IsTable') = 1)
+	BEGIN
+		CREATE TABLE PMT_EasySpotObjects
+		(
+			[Id] [int] NOT NULL IDENTITY(1, 1),
+			[PortalId] [int] NOT NULL,
+			[ObjectType] int,
+			[PMTObjectId] int,
+			[EasySpotObjectId] nvarchar(255),
+			[CreatedById] [int] NOT NULL,
+			[DateCreated] DateTime,
+			[LastModifiedById] [int] NOT NULL,
+			[LastModifiedDate] DateTime
+		)
+	END
+GO
+
+if not exists (select * from dbo.sysobjects where id = object_id(N'PMT_Invoices') and OBJECTPROPERTY(id, N'IsTable') = 1)
+	BEGIN
+		CREATE TABLE PMT_Invoices
+		(
+			[Id] [int] NOT NULL IDENTITY(1, 1),
+			[PortalId] [int],
+			[AdvertiserId] [int],
+			[AgencyId] [int],
+			[QBInvoiceNumber] nvarchar(255),
+			[SentToQB] bit,
+			[CreatedById] [int],
+			[DateCreated] DateTime,
+			[LastModifiedById] [int],
+			[LastModifiedDate] DateTime
+		)
+	END
+GO
+
+if col_length((N'PMT_Invoices'),'BillToId') is null
+    BEGIN
+        ALTER TABLE PMT_Invoices ADD BillToId int
+    END
+GO
+
+if not exists (select * from dbo.sysobjects where id = object_id(N'PMT_WOsInInvoices') and OBJECTPROPERTY(id, N'IsTable') = 1)
+	BEGIN
+		CREATE TABLE PMT_WOsInInvoices
+		(
+			[InvoiceId] [int],
+			[WOId] [int]
+		)
+	END
+GO
+
+/** Drop Existing Stored Procedures **/
+
+if exists (select * from dbo.sysobjects where id = object_id(N'PMT_AddAgency') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
+	drop procedure PMT_AddAgency
+GO
+
+if exists (select * from dbo.sysobjects where id = object_id(N'PMT_UpdateAgency') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
+	drop procedure PMT_UpdateAgency
+GO
+
+if exists (select * from dbo.sysobjects where id = object_id(N'PMT_DeleteAgency') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
+	drop procedure PMT_DeleteAgency
+GO
+
+if exists (select * from dbo.sysobjects where id = object_id(N'PMT_Get_AgencyById') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
+	drop procedure PMT_Get_AgencyById
+GO
+
+if exists (select * from dbo.sysobjects where id = object_id(N'PMT_Get_AgenciesByPortalId') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
+	drop procedure PMT_Get_AgenciesByPortalId
+GO
+
+if exists (select * from dbo.sysobjects where id = object_id(N'PMT_AddAdvertiser') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
+	drop procedure PMT_AddAdvertiser
+GO
+
+if exists (select * from dbo.sysobjects where id = object_id(N'PMT_UpdateAdvertiser') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
+	drop procedure PMT_UpdateAdvertiser
+GO
+
+if exists (select * from dbo.sysobjects where id = object_id(N'PMT_Get_AdvertisersByPortalId') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
+	drop procedure PMT_Get_AdvertisersByPortalId
+GO
+
+if exists (select * from dbo.sysobjects where id = object_id(N'PMT_Get_AdvertiserById') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
+	drop procedure PMT_Get_AdvertiserById
+GO
+
+if exists (select * from dbo.sysobjects where id = object_id(N'PMT_DeleteAdvertiser') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
+	drop procedure PMT_DeleteAdvertiser
+GO
+if exists (select * from dbo.sysobjects where id = object_id(N'PMT_AddMarket') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
+	drop procedure PMT_AddMarket
+GO
+
+if exists (select * from dbo.sysobjects where id = object_id(N'PMT_UpdateMarket') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
+	drop procedure PMT_UpdateMarket
+GO
+
+if exists (select * from dbo.sysobjects where id = object_id(N'PMT_Get_MarketsByPortalId') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
+	drop procedure PMT_Get_MarketsByPortalId
+GO
+
+if exists (select * from dbo.sysobjects where id = object_id(N'PMT_Get_MarketById') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
+	drop procedure PMT_Get_MarketById
+GO
+
+if exists (select * from dbo.sysobjects where id = object_id(N'PMT_DeleteMarket') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
+	drop procedure PMT_DeleteMarket
+GO
+
+if exists (select * from dbo.sysobjects where id = object_id(N'PMT_AddStation') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
+	drop procedure PMT_AddStation
+GO
+
+if exists (select * from dbo.sysobjects where id = object_id(N'PMT_UpdateStation') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
+	drop procedure PMT_UpdateStation
+GO
+
+if exists (select * from dbo.sysobjects where id = object_id(N'PMT_Get_StationsByPortalId') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
+	drop procedure PMT_Get_StationsByPortalId
+GO
+
+if exists (select * from dbo.sysobjects where id = object_id(N'PMT_Get_StationById') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
+	drop procedure PMT_Get_StationById
+GO
+
+if exists (select * from dbo.sysobjects where id = object_id(N'PMT_DeleteStation') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
+	drop procedure PMT_DeleteStation
+GO
+
+if exists (select * from dbo.sysobjects where id = object_id(N'PMT_AddClientType') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
+	drop procedure PMT_AddClientType
+GO
+
+if exists (select * from dbo.sysobjects where id = object_id(N'PMT_UpdateClientType') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
+	drop procedure PMT_UpdateClientType
+GO
+
+if exists (select * from dbo.sysobjects where id = object_id(N'PMT_Get_ClientTypesByPortalId') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
+	drop procedure PMT_Get_ClientTypesByPortalId
+GO
+
+if exists (select * from dbo.sysobjects where id = object_id(N'PMT_Get_ClientTypeById') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
+	drop procedure PMT_Get_ClientTypeById
+GO
+
+if exists (select * from dbo.sysobjects where id = object_id(N'PMT_DeleteClientType') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
+	drop procedure PMT_DeleteClientType
+GO
+
+if exists (select * from dbo.sysobjects where id = object_id(N'PMT_AddCarrierType') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
+	drop procedure PMT_AddCarrierType
+GO
+
+if exists (select * from dbo.sysobjects where id = object_id(N'PMT_UpdateCarrierType') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
+	drop procedure PMT_UpdateCarrierType
+GO
+
+if exists (select * from dbo.sysobjects where id = object_id(N'PMT_Get_CarrierTypesByPortalId') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
+	drop procedure PMT_Get_CarrierTypesByPortalId
+GO
+
+if exists (select * from dbo.sysobjects where id = object_id(N'PMT_Get_CarrierTypeById') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
+	drop procedure PMT_Get_CarrierTypeById
+GO
+
+if exists (select * from dbo.sysobjects where id = object_id(N'PMT_DeleteCarrierType') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
+	drop procedure PMT_DeleteCarrierType
+GO
+
+if exists (select * from dbo.sysobjects where id = object_id(N'PMT_AddFreightType') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
+	drop procedure PMT_AddFreightType
+GO
+
+if exists (select * from dbo.sysobjects where id = object_id(N'PMT_UpdateFreightType') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
+	drop procedure PMT_UpdateFreightType
+GO
+
+if exists (select * from dbo.sysobjects where id = object_id(N'PMT_Get_FreightTypesByPortalId') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
+	drop procedure PMT_Get_FreightTypesByPortalId
+GO
+
+if exists (select * from dbo.sysobjects where id = object_id(N'PMT_Get_FreightTypeById') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
+	drop procedure PMT_Get_FreightTypeById
+GO
+
+if exists (select * from dbo.sysobjects where id = object_id(N'PMT_DeleteFreightType') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
+	drop procedure PMT_DeleteFreightType
+GO
+
+if exists (select * from dbo.sysobjects where id = object_id(N'PMT_AddTapeFormat') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
+	drop procedure PMT_AddTapeFormat
+GO
+
+if exists (select * from dbo.sysobjects where id = object_id(N'PMT_UpdateTapeFormat') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
+	drop procedure PMT_UpdateTapeFormat
+GO
+
+if exists (select * from dbo.sysobjects where id = object_id(N'PMT_Get_TapeFormatsByPortalId') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
+	drop procedure PMT_Get_TapeFormatsByPortalId
+GO
+
+if exists (select * from dbo.sysobjects where id = object_id(N'PMT_Get_TapeFormatById') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
+	drop procedure PMT_Get_TapeFormatById
+GO
+
+if exists (select * from dbo.sysobjects where id = object_id(N'PMT_DeleteTapeFormat') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
+	drop procedure PMT_DeleteTapeFormat
+GO
+
+if exists (select * from dbo.sysobjects where id = object_id(N'PMT_AddDeliveryMethod') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
+	drop procedure PMT_AddDeliveryMethod
+GO
+
+if exists (select * from dbo.sysobjects where id = object_id(N'PMT_UpdateDeliveryMethod') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
+	drop procedure PMT_UpdateDeliveryMethod
+GO
+
+if exists (select * from dbo.sysobjects where id = object_id(N'PMT_Get_DeliveryMethodsByPortalId') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
+	drop procedure PMT_Get_DeliveryMethodsByPortalId
+GO
+
+if exists (select * from dbo.sysobjects where id = object_id(N'PMT_Get_DeliveryMethodById') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
+	drop procedure PMT_Get_DeliveryMethodById
+GO
+
+if exists (select * from dbo.sysobjects where id = object_id(N'PMT_DeleteDeliveryMethod') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
+	drop procedure PMT_DeleteDeliveryMethod
+GO
+
+if exists (select * from dbo.sysobjects where id = object_id(N'PMT_AddStationGroup') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
+	drop procedure PMT_AddStationGroup
+GO
+
+if exists (select * from dbo.sysobjects where id = object_id(N'PMT_UpdateStationGroup') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
+	drop procedure PMT_UpdateStationGroup
+GO
+
+if exists (select * from dbo.sysobjects where id = object_id(N'PMT_Get_StationGroupsByPortalId') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
+	drop procedure PMT_Get_StationGroupsByPortalId
+GO
+
+if exists (select * from dbo.sysobjects where id = object_id(N'PMT_Get_StationGroupById') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
+	drop procedure PMT_Get_StationGroupById
+GO
+
+if exists (select * from dbo.sysobjects where id = object_id(N'PMT_DeleteStationGroup') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
+	drop procedure PMT_DeleteStationGroup
+GO
+
+if exists (select * from dbo.sysobjects where id = object_id(N'PMT_Get_StationGroupsByUserId') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
+	drop procedure PMT_Get_StationGroupsByUserId
+GO
+
+if exists (select * from dbo.sysobjects where id = object_id(N'PMT_Get_StationsInGroupById') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
+	drop procedure PMT_Get_StationsInGroupById
+GO
+
+if exists (select * from dbo.sysobjects where id = object_id(N'PMT_DeleteStationsInGroup') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
+	drop procedure PMT_DeleteStationsInGroup
+GO
+
+if exists (select * from dbo.sysobjects where id = object_id(N'PMT_DeleteStationsInGroupByGroup') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
+	drop procedure PMT_DeleteStationsInGroupByGroup
+GO
+
+if exists (select * from dbo.sysobjects where id = object_id(N'PMT_AddStationsInGroup') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
+	drop procedure PMT_AddStationsInGroup
+GO
+
+if exists (select * from dbo.sysobjects where id = object_id(N'PMT_Get_StationsByPortalIdActive') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
+	drop procedure PMT_Get_StationsByPortalIdActive
+GO
+
+if exists (select * from dbo.sysobjects where id = object_id(N'PMT_AddLabel') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
+	drop procedure PMT_AddLabel
+GO
+
+if exists (select * from dbo.sysobjects where id = object_id(N'PMT_UpdateLabel') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
+	drop procedure PMT_UpdateLabel
+GO
+
+if exists (select * from dbo.sysobjects where id = object_id(N'PMT_Get_LabelsByPortalId') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
+	drop procedure PMT_Get_LabelsByPortalId
+GO
+
+if exists (select * from dbo.sysobjects where id = object_id(N'PMT_Get_LabelById') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
+	drop procedure PMT_Get_LabelById
+GO
+
+if exists (select * from dbo.sysobjects where id = object_id(N'PMT_DeleteLabel') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
+	drop procedure PMT_DeleteLabel
+GO
+
+if exists (select * from dbo.sysobjects where id = object_id(N'PMT_AddMasterItem') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
+	drop procedure PMT_AddMasterItem
+GO
+
+if exists (select * from dbo.sysobjects where id = object_id(N'PMT_UpdateMasterItem') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
+	drop procedure PMT_UpdateMasterItem
+GO
+
+if exists (select * from dbo.sysobjects where id = object_id(N'PMT_Get_MasterItemsByPortalId') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
+	drop procedure PMT_Get_MasterItemsByPortalId
+GO
+
+if exists (select * from dbo.sysobjects where id = object_id(N'PMT_Get_MasterItemById') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
+	drop procedure PMT_Get_MasterItemById
+GO
+
+if exists (select * from dbo.sysobjects where id = object_id(N'PMT_DeleteMasterItem') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
+	drop procedure PMT_DeleteMasterItem
+GO
+
+if exists (select * from dbo.sysobjects where id = object_id(N'PMT_AddAdvertiserAgency') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
+	drop procedure PMT_AddAdvertiserAgency
+GO
+
+if exists (select * from dbo.sysobjects where id = object_id(N'PMT_DeleteAdvertiserAgencyByAdvertiserId') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
+	drop procedure PMT_DeleteAdvertiserAgencyByAdvertiserId
+GO
+
+if exists (select * from dbo.sysobjects where id = object_id(N'PMT_Get_AgenciesByAdvertiserId') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
+	drop procedure PMT_Get_AgenciesByAdvertiserId
+GO
+
+if exists (select * from dbo.sysobjects where id = object_id(N'PMT_Get_AgencyIdsByAdvertiserId') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
+	drop procedure PMT_Get_AgencyIdsByAdvertiserId
+GO
+
+if exists (select * from dbo.sysobjects where id = object_id(N'PMT_AddMasterItemAgency') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
+	drop procedure PMT_AddMasterItemAgency
+GO
+
+if exists (select * from dbo.sysobjects where id = object_id(N'PMT_DeleteMasterItemAgencyByMasterItemId') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
+	drop procedure PMT_DeleteMasterItemAgencyByMasterItemId
+GO
+
+if exists (select * from dbo.sysobjects where id = object_id(N'PMT_Get_AgenciesByMasterItemId') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
+	drop procedure PMT_Get_AgenciesByMasterItemId
+GO
+
+if exists (select * from dbo.sysobjects where id = object_id(N'PMT_Get_AgencyIdsByMasterItemId') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
+	drop procedure PMT_Get_AgencyIdsByMasterItemId
+GO
+
+if exists (select * from dbo.sysobjects where id = object_id(N'PMT_GetAdvertiserAgencies') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
+	drop procedure PMT_GetAdvertiserAgencies
+GO
+
+if exists (select * from dbo.sysobjects where id = object_id(N'PMT_GetMasterItemAgencies') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
+	drop procedure PMT_GetMasterItemAgencies
+GO
+
+if exists (select * from dbo.sysobjects where id = object_id(N'PMT_AddUserInAgency') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
+	drop procedure PMT_AddUserInAgency
+GO
+
+if exists (select * from dbo.sysobjects where id = object_id(N'PMT_DeleteUserFromAgencies') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
+	drop procedure PMT_DeleteUserFromAgencies
+GO
+
+if exists (select * from dbo.sysobjects where id = object_id(N'PMT_AddUserInAdvertiser') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
+	drop procedure PMT_AddUserInAdvertiser
+GO
+
+if exists (select * from dbo.sysobjects where id = object_id(N'PMT_DeleteUserFromAdvertisers') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
+	drop procedure PMT_DeleteUserFromAdvertisers
+GO
+
+if exists (select * from dbo.sysobjects where id = object_id(N'PMT_DeleteUserFromAdvertisers') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
+	drop procedure PMT_DeleteUserFromAdvertisers
+GO
+
+if exists (select * from dbo.sysobjects where id = object_id(N'PMT_GetAgenciesByUser') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
+	drop procedure PMT_GetAgenciesByUser
+GO
+
+if exists (select * from dbo.sysobjects where id = object_id(N'PMT_GetAdvertisersByUser') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
+	drop procedure PMT_GetAdvertisersByUser
+GO
+
+if exists (select * from dbo.sysobjects where id = object_id(N'PMT_GetMaxPMTMediaId') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
+	drop procedure PMT_GetMaxPMTMediaId
+GO
+
+if exists (select * from dbo.sysobjects where id = object_id(N'PMT_Get_LibraryItemById') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
+	drop procedure PMT_Get_LibraryItemById
+GO
+
+if exists (select * from dbo.sysobjects where id = object_id(N'PMT_DeleteLibraryItem') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
+	drop procedure PMT_DeleteLibraryItem
+GO
+
+if exists (select * from dbo.sysobjects where id = object_id(N'PMT_UpdateLibraryItem') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
+	drop procedure PMT_UpdateLibraryItem
+GO
+
+if exists (select * from dbo.sysobjects where id = object_id(N'PMT_AddLibraryItem') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
+	drop procedure PMT_AddLibraryItem
+GO
+
+if exists (select * from dbo.sysobjects where id = object_id(N'PMT_GetLibraryItemsByPortalId') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
+	drop procedure PMT_GetLibraryItemsByPortalId
+GO
+
+if exists (select * from dbo.sysobjects where id = object_id(N'PMT_AddService') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
+	drop procedure PMT_AddService
+GO
+
+if exists (select * from dbo.sysobjects where id = object_id(N'PMT_UpdateService') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
+	drop procedure PMT_UpdateService
+GO
+
+if exists (select * from dbo.sysobjects where id = object_id(N'PMT_Get_ServicesByPortalId') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
+	drop procedure PMT_Get_ServicesByPortalId
+GO
+
+if exists (select * from dbo.sysobjects where id = object_id(N'PMT_Get_ServiceById') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
+	drop procedure PMT_Get_ServiceById
+GO
+
+if exists (select * from dbo.sysobjects where id = object_id(N'PMT_DeleteService') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
+	drop procedure PMT_DeleteService
+GO
+
+if exists (select * from dbo.sysobjects where id = object_id(N'PMT_AddWorkOrder') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
+	drop procedure PMT_AddWorkOrder
+GO
+
+if exists (select * from dbo.sysobjects where id = object_id(N'PMT_UpdateWorkOrder') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
+	drop procedure PMT_UpdateWorkOrder
+GO
+
+if exists (select * from dbo.sysobjects where id = object_id(N'PMT_Get_WorkOrdersByPortalId') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
+	drop procedure PMT_Get_WorkOrdersByPortalId
+GO
+
+if exists (select * from dbo.sysobjects where id = object_id(N'PMT_Get_WorkOrderById') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
+	drop procedure PMT_Get_WorkOrderById
+GO
+
+if exists (select * from dbo.sysobjects where id = object_id(N'PMT_DeleteWorkOrder') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
+	drop procedure PMT_DeleteWorkOrder
+GO
+
+if exists (select * from dbo.sysobjects where id = object_id(N'PMT_AddWorkOrderGroupStation') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
+	drop procedure PMT_AddWorkOrderGroupStation
+GO
+
+if exists (select * from dbo.sysobjects where id = object_id(N'PMT_UpdateWorkOrderGroupStation') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
+	drop procedure PMT_UpdateWorkOrderGroupStation
+GO
+
+if exists (select * from dbo.sysobjects where id = object_id(N'PMT_Get_WorkOrderGroupStationsByGroupId') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
+	drop procedure PMT_Get_WorkOrderGroupStationsByGroupId
+GO
+
+if exists (select * from dbo.sysobjects where id = object_id(N'PMT_Get_WorkOrderGroupStationById') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
+	drop procedure PMT_Get_WorkOrderGroupStationById
+GO
+
+if exists (select * from dbo.sysobjects where id = object_id(N'PMT_DeleteWorkOrderGroupStation') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
+	drop procedure PMT_DeleteWorkOrderGroupStation
+GO
+
+if exists (select * from dbo.sysobjects where id = object_id(N'PMT_DeleteWorkOrderGroupStationByGroupId') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
+	drop procedure PMT_DeleteWorkOrderGroupStationByGroupId
+GO
+
+if exists (select * from dbo.sysobjects where id = object_id(N'PMT_DeleteWorkOrderGroupStationByWOId') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
+	drop procedure PMT_DeleteWorkOrderGroupStationByWOId
+GO
+
+if exists (select * from dbo.sysobjects where id = object_id(N'PMT_AddWorkOrderGroup') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
+	drop procedure PMT_AddWorkOrderGroup
+GO
+
+if exists (select * from dbo.sysobjects where id = object_id(N'PMT_UpdateWorkOrderGroup') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
+	drop procedure PMT_UpdateWorkOrderGroup
+GO
+
+if exists (select * from dbo.sysobjects where id = object_id(N'PMT_Get_WorkOrderGroupsByWOId') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
+	drop procedure PMT_Get_WorkOrderGroupsByWOId
+GO
+
+if exists (select * from dbo.sysobjects where id = object_id(N'PMT_Get_WorkOrderGroupById') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
+	drop procedure PMT_Get_WorkOrderGroupById
+GO
+
+if exists (select * from dbo.sysobjects where id = object_id(N'PMT_DeleteWorkOrderGroup') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
+	drop procedure PMT_DeleteWorkOrderGroup
+GO
+
+if exists (select * from dbo.sysobjects where id = object_id(N'PMT_AddWOGroupLibItem') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
+	drop procedure PMT_AddWOGroupLibItem
+GO
+
+if exists (select * from dbo.sysobjects where id = object_id(N'PMT_DeleteWOGroupLibItemsByWOGroupId') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
+	drop procedure PMT_DeleteWOGroupLibItemsByWOGroupId
+GO
+
+if exists (select * from dbo.sysobjects where id = object_id(N'PMT_GetLibItemsByWOGroupId') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
+	drop procedure PMT_GetLibItemsByWOGroupId
+GO
+
+if exists (select * from dbo.sysobjects where id = object_id(N'PMT_AddWOGroupService') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
+	drop procedure PMT_AddWOGroupService
+GO
+
+if exists (select * from dbo.sysobjects where id = object_id(N'PMT_DeleteWOGroupServicesByWOGroupId') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
+	drop procedure PMT_DeleteWOGroupServicesByWOGroupId
+GO
+
+if exists (select * from dbo.sysobjects where id = object_id(N'PMT_GetServicesByWOGroupId') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
+	drop procedure PMT_GetServicesByWOGroupId
+GO
+
+if exists (select * from dbo.sysobjects where id = object_id(N'PMT_Get_AdvertisersByAgencyId') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
+	drop procedure PMT_Get_AdvertisersByAgencyId
+GO
+
+if exists (select * from dbo.sysobjects where id = object_id(N'PMT_Get_WOCommentsByWOId') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
+	drop procedure PMT_Get_WOCommentsByWOId
+GO
+
+if exists (select * from dbo.sysobjects where id = object_id(N'PMT_Get_WOCommentById') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
+	drop procedure PMT_Get_WOCommentById
+GO
+
+if exists (select * from dbo.sysobjects where id = object_id(N'PMT_DeleteWOComment') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
+	drop procedure PMT_DeleteWOComment
+GO
+
+if exists (select * from dbo.sysobjects where id = object_id(N'PMT_UpdateWOComment') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
+	drop procedure PMT_UpdateWOComment
+GO
+
+if exists (select * from dbo.sysobjects where id = object_id(N'PMT_AddWOComment') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
+	drop procedure PMT_AddWOComment
+GO
+
+if exists (select * from dbo.sysobjects where id = object_id(N'PMT_Get_TasksByWOId') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
+	drop procedure PMT_Get_TasksByWOId
+GO
+
+if exists (select * from dbo.sysobjects where id = object_id(N'PMT_Get_TaskById') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
+	drop procedure PMT_Get_TaskById
+GO
+
+if exists (select * from dbo.sysobjects where id = object_id(N'PMT_DeleteTask') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
+	drop procedure PMT_DeleteTask
+GO
+
+if exists (select * from dbo.sysobjects where id = object_id(N'PMT_UpdateTask') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
+	drop procedure PMT_UpdateTask
+GO
+
+if exists (select * from dbo.sysobjects where id = object_id(N'PMT_AddTask') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
+	drop procedure PMT_AddTask
+GO
+
+if exists (select * from dbo.sysobjects where id = object_id(N'PMT_Get_QBCodeById') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
+	drop procedure PMT_Get_QBCodeById
+GO
+
+if exists (select * from dbo.sysobjects where id = object_id(N'PMT_Get_QBCodesByPortalId') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
+	drop procedure PMT_Get_QBCodesByPortalId
+GO
+
+if exists (select * from dbo.sysobjects where id = object_id(N'PMT_DeleteQBCode') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
+	drop procedure PMT_DeleteQBCode
+GO
+
+if exists (select * from dbo.sysobjects where id = object_id(N'PMT_UpdateQBCode') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
+	drop procedure PMT_UpdateQBCode
+GO
+
+if exists (select * from dbo.sysobjects where id = object_id(N'PMT_AddQBCode') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
+	drop procedure PMT_AddQBCode
+GO
+
+if exists (select * from dbo.sysobjects where id = object_id(N'PMT_DeleteQBCodeDeliveryMethodsByQBCodeId') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
+	drop procedure PMT_DeleteQBCodeDeliveryMethodsByQBCodeId
+GO
+
+if exists (select * from dbo.sysobjects where id = object_id(N'PMT_AddQBCodeDeliveryMethod') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
+	drop procedure PMT_AddQBCodeDeliveryMethod
+GO
+
+if exists (select * from dbo.sysobjects where id = object_id(N'PMT_DeleteQBCodeTapeFormatsByQBCodeId') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
+	drop procedure PMT_DeleteQBCodeTapeFormatsByQBCodeId
+GO
+
+if exists (select * from dbo.sysobjects where id = object_id(N'PMT_AddQBCodeTapeFormat') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
+	drop procedure PMT_AddQBCodeTapeFormat
+GO
+
+if exists (select * from dbo.sysobjects where id = object_id(N'PMT_DeleteQBCodeServicesByQBCodeId') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
+	drop procedure PMT_DeleteQBCodeServicesByQBCodeId
+GO
+
+if exists (select * from dbo.sysobjects where id = object_id(N'PMT_AddQBCodeService') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
+	drop procedure PMT_AddQBCodeService
+GO
+
+if exists (select * from dbo.sysobjects where id = object_id(N'PMT_GetDeliveryMethodsByQBCodeId') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
+	drop procedure PMT_GetDeliveryMethodsByQBCodeId
+GO
+
+if exists (select * from dbo.sysobjects where id = object_id(N'PMT_GetTapeFormatsByQBCodeId') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
+	drop procedure PMT_GetTapeFormatsByQBCodeId
+GO
+
+if exists (select * from dbo.sysobjects where id = object_id(N'PMT_GetServicesByQBCodeId') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
+	drop procedure PMT_GetServicesByQBCodeId
+GO
+
+if exists (select * from dbo.sysobjects where id = object_id(N'PMT_DeleteTaskQBCodeByTaskId') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
+	drop procedure PMT_DeleteTaskQBCodeByTaskId
+GO
+
+if exists (select * from dbo.sysobjects where id = object_id(N'PMT_AddTaskQBCode') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
+	drop procedure PMT_AddTaskQBCode
+GO
+
+if exists (select * from dbo.sysobjects where id = object_id(N'PMT_GetQBCodesByTaskId') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
+	drop procedure PMT_GetQBCodesByTaskId
+GO
+
+if exists (select * from dbo.sysobjects where id = object_id(N'PMT_Get_OpenTasks') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
+	drop procedure PMT_Get_OpenTasks
+GO
+
+if exists (select * from dbo.sysobjects where id = object_id(N'PMT_Get_OpenTasksByPortalId') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
+	drop procedure PMT_Get_OpenTasksByPortalId
+GO
+
+if exists (select * from dbo.sysobjects where id = object_id(N'PMT_GetMaxLabelNumber') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
+	drop procedure PMT_GetMaxLabelNumber
+GO
+
+if exists (select * from dbo.sysobjects where id = object_id(N'PMT_Get_ReportById') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
+	drop procedure PMT_Get_ReportById
+GO
+
+if exists (select * from dbo.sysobjects where id = object_id(N'PMT_Get_ReportsByPortalId') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
+	drop procedure PMT_Get_ReportsByPortalId
+GO
+
+if exists (select * from dbo.sysobjects where id = object_id(N'PMT_DeleteReport') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
+	drop procedure PMT_DeleteReport
+GO
+
+if exists (select * from dbo.sysobjects where id = object_id(N'PMT_UpdateReport') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
+	drop procedure PMT_UpdateReport
+GO
+
+if exists (select * from dbo.sysobjects where id = object_id(N'PMT_AddReport') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
+	drop procedure PMT_AddReport
+GO
+
+if exists (select * from dbo.sysobjects where id = object_id(N'PMT_Get_EasySpotByIdAndType') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
+	drop procedure PMT_Get_EasySpotByIdAndType
+GO
+
+if exists (select * from dbo.sysobjects where id = object_id(N'PMT_AddEasySpotObject') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
+	drop procedure PMT_AddEasySpotObject
+GO
+
+if exists (select * from dbo.sysobjects where id = object_id(N'PMT_Get_InvoiceById') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
+	drop procedure PMT_Get_InvoiceById
+GO
+
+if exists (select * from dbo.sysobjects where id = object_id(N'PMT_Get_InvoicesByPortalId') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
+	drop procedure PMT_Get_InvoicesByPortalId
+GO
+
+if exists (select * from dbo.sysobjects where id = object_id(N'PMT_DeleteInvoice') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
+	drop procedure PMT_DeleteInvoice
+GO
+
+if exists (select * from dbo.sysobjects where id = object_id(N'PMT_UpdateInvoice') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
+	drop procedure PMT_UpdateInvoice
+GO
+
+if exists (select * from dbo.sysobjects where id = object_id(N'PMT_AddInvoice') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
+	drop procedure PMT_AddInvoice
+GO
+
+if exists (select * from dbo.sysobjects where id = object_id(N'PMT_AddWOInInvoice') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
+	drop procedure PMT_AddWOInInvoice
+GO
+
+if exists (select * from dbo.sysobjects where id = object_id(N'PMT_DeleteWOInInvoicesByInvoiceId') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
+	drop procedure PMT_DeleteWOInInvoicesByInvoiceId
+GO
+
+if exists (select * from dbo.sysobjects where id = object_id(N'PMT_GetWOInInvoicesByInvoiceId') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
+	drop procedure PMT_GetWOInInvoicesByInvoiceId
+GO
+
+if exists (select * from dbo.sysobjects where id = object_id(N'PMT_Get_InvoicesByToSend') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
+	drop procedure PMT_Get_InvoicesByToSend
+GO
+
+if exists (select * from dbo.sysobjects where id = object_id(N'PMT_Get_LibraryItemsByISCI') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
+	drop procedure PMT_Get_LibraryItemsByISCI
+GO
+
+/** Create Stored Procedures **/
+
+create procedure PMT_Get_LibraryItemsByISCI
+
+	@ISCICode nvarchar(255)
+
+as
+
+select * from PMT_LibraryItems where ISCICode = @ISCICode
+
+go
+
+create procedure PMT_Get_InvoicesByToSend
+
+as
+
+select * from   PMT_Invoices
+where  SentToQB = 0
+
+GO
+
+create procedure PMT_AddWOInInvoice
+	
+	@InvoiceId int,
+	@WOId int
+
+as
+
+insert into PMT_WOsInInvoices (
+
+	InvoiceId,
+	WOId
+	)
+VALUES (
+	@InvoiceId,
+	@WOId
+)
+
+GO
+
+create procedure PMT_DeleteWOInInvoicesByInvoiceId
+	
+	@InvoiceId int
+
+as
+
+delete from PMT_WOsInInvoices
+where InvoiceId = @InvoiceId
+
+GO
+
+create procedure PMT_GetWOInInvoicesByInvoiceId
+
+	@InvoiceId int
+
+as
+
+select WOId from PMT_WOsInInvoices
+where InvoiceId = @InvoiceId
+
+GO
+
+
+create procedure PMT_Get_InvoiceById
+
+    @Id int
+
+as
+
+select * from   PMT_Invoices
+where  Id = @Id
+
+GO
+
+create procedure PMT_Get_InvoicesByPortalId
+
+    @PortalId int
+
+as
+
+select * from   PMT_Invoices
+where  PortalId = @PortalId
+
+GO
+
+create procedure PMT_DeleteInvoice
+
+    @Id int
+
+as
+
+delete
+from   PMT_Invoices
+where  Id = @Id
+
+GO
+
+create procedure PMT_UpdateInvoice
+	@Id int,
+	@PortalId int,
+	@AdvertiserId int,
+	@AgencyId int,
+	@QBInvoiceNumber nvarchar(255),
+	@SentToQB bit,
+	@CreatedById int,
+	@DateCreated DateTime,
+	@LastModifiedById int,
+	@LastModifiedDate DateTime,
+	@BillToId int
+as
+
+UPDATE PMT_Invoices
+set	PortalId	 = @PortalId,
+	AdvertiserId	= @AdvertiserId,
+	AgencyId	= @AgencyId,
+	QBInvoiceNumber	= @QBInvoiceNumber,
+	SentToQB	= @SentToQB,
+	CreatedById	 = @CreatedById,
+	DateCreated	 = @DateCreated,
+	LastModifiedById = @LastModifiedById,
+	LastModifiedDate = @LastModifiedDate,
+	BillToId = @BillToId
+WHERE Id = @Id
+
+GO
+
+
+create procedure PMT_AddInvoice
+
+	@PortalId int,
+	@AdvertiserId int,
+	@AgencyId int,
+	@QBInvoiceNumber nvarchar(255),
+	@SentToQB bit,
+	@CreatedById int,
+	@DateCreated DateTime,
+	@LastModifiedById int,
+	@LastModifiedDate DateTime,
+	@BillToId int
+
+as
+
+insert into PMT_Invoices (
+	
+	PortalId,
+	AdvertiserId,
+	AgencyId,
+	QBInvoiceNumber,
+	SentToQB,
+	CreatedById,
+	DateCreated,
+	LastModifiedById,
+	LastModifiedDate,
+	BillToId
+) 
+values (
+	@PortalId,
+	@AdvertiserId,
+	@AgencyId,
+	@QBInvoiceNumber,
+	@SentToQB,
+	@CreatedById,
+	@DateCreated,
+	@LastModifiedById,
+	@LastModifiedDate,
+	@BillToId
+)
+
+select SCOPE_identity()
+
+GO
+
+create procedure PMT_Get_EasySpotByIdAndType
+
+    @PMTObjectId int,
+    @ObjectType int
+
+as
+
+select * from   PMT_EasySpotObjects
+where  PMTObjectId = @PMTObjectId and ObjectType = @ObjectType
+
+GO
+
+create procedure PMT_AddEasySpotObject
+
+	@PortalId int,
+	@ObjectType int,
+	@PMTObjectId int,
+	@EasySpotObjectId nvarchar(255),
+	@CreatedById int,
+	@DateCreated DateTime,
+	@LastModifiedById int,
+	@LastModifiedDate DateTime
+
+as
+
+insert into PMT_EasySpotObjects (
+	
+	PortalId,
+	ObjectType,
+	PMTObjectId,	
+	EasySpotObjectId,
+	CreatedById,
+	DateCreated,
+	LastModifiedById,
+	LastModifiedDate
+) 
+values (
+	@PortalId,
+	@ObjectType,
+	@PMTObjectId,
+	@EasySpotObjectId,
+	@CreatedById,
+	@DateCreated,
+	@LastModifiedById,
+	@LastModifiedDate
+)
+
+select SCOPE_identity()
+
+GO
+
+create procedure PMT_Get_ReportById
+
+    @Id int
+
+as
+
+select * from   PMT_Reports
+where  Id = @Id
+
+GO
+
+create procedure PMT_Get_ReportsByPortalId
+
+    @PortalId int
+
+as
+
+select * from   PMT_Reports
+where  PortalId = @PortalId
+
+GO
+
+create procedure PMT_DeleteReport
+
+    @Id int
+
+as
+
+delete
+from   PMT_Reports
+where  Id = @Id
+
+GO
+
+create procedure PMT_UpdateReport
+	@Id int,
+	@PortalId int,
+	@ReportName nvarchar(255),
+	@ReportType int,
+	@AdvertiserId int,
+	@AgencyId int,
+	@Keyword nvarchar(255),
+	@Status int,
+	@Frequency nvarchar(25),
+	@FirstReportDate DateTime,
+	@EmailTo nvarchar(255),
+	@EmailMessage nvarchar(MAX),
+	@isActive bit,
+	@CreatedById int,
+	@DateCreated DateTime,
+	@LastModifiedById int,
+	@LastModifiedDate DateTime
+as
+
+UPDATE PMT_Reports
+set	PortalId	 = @PortalId,
+	ReportName	 = @ReportName,
+	ReportType	 = @ReportType,
+	AdvertiserId	 = @AdvertiserId,
+	AgencyId	 = @AgencyId,
+	Keyword		 = @Keyword,
+	Status		 = @Status,
+	Frequency	 = @Frequency,
+	FirstReportDate	 = @FirstReportDate,
+	EmailTo		 = @EmailTo,
+	EmailMessage	 = @EmailMessage,
+	isActive	 = @isActive,
+	CreatedById	 = @CreatedById,
+	DateCreated	 = @DateCreated,
+	LastModifiedById = @LastModifiedById,
+	LastModifiedDate = @LastModifiedDate
+WHERE Id = @Id
+
+GO
+
+
+create procedure PMT_AddReport
+
+	@PortalId int,
+	@ReportName nvarchar(255),
+	@ReportType int,
+	@AdvertiserId int,
+	@AgencyId int,
+	@Keyword nvarchar(255),
+	@Status int,
+	@Frequency nvarchar(25),
+	@FirstReportDate DateTime,
+	@EmailTo nvarchar(255),
+	@EmailMessage nvarchar(MAX),
+	@isActive bit,
+	@CreatedById int,
+	@DateCreated DateTime,
+	@LastModifiedById int,
+	@LastModifiedDate DateTime
+
+as
+
+insert into PMT_Reports (
+	
+	PortalId,
+	ReportName,
+	ReportType,
+	AdvertiserId,
+	AgencyId,
+	Keyword,
+	Status,
+	Frequency,
+	FirstReportDate,
+	EmailTo,
+	EmailMessage,
+	isActive,
+	CreatedById,
+	DateCreated,
+	LastModifiedById,
+	LastModifiedDate
+) 
+values (
+	@PortalId,
+	@ReportName,
+	@ReportType,
+	@AdvertiserId,
+	@AgencyId,
+	@Keyword,
+	@Status,
+	@Frequency,
+	@FirstReportDate,
+	@EmailTo,
+	@EmailMessage,
+	@isActive,
+	@CreatedById,
+	@DateCreated,
+	@LastModifiedById,
+	@LastModifiedDate
+)
+
+select SCOPE_identity()
+
+GO
+
+Create Procedure PMT_GetQBCodesByTaskId
+	@TaskId int
+as
+select * from PMT_QBCodes as a
+INNER JOIN PMT_TaskQBCodes as b
+on b.QBCodeId = a.Id
+where b.TaskId = @TaskId
+GO
+
+create procedure PMT_DeleteTaskQBCodeByTaskId
+
+    @TaskId int
+
+as
+
+delete
+from   PMT_TaskQBCodes
+where  TaskId = @TaskId
+
+GO
+
+create procedure PMT_AddTaskQBCode
+
+    @TaskId int,
+    @QBCodeId int
+
+as
+
+Insert into PMT_TaskQBCodes (
+	TaskId,
+	QBCodeId
+	)
+Values (
+	@TaskId,
+	@QBCodeId
+	)	
+GO
+
+create procedure PMT_Get_QBCodeById
+
+    @Id int
+
+as
+
+select * from   PMT_QBCodes
+where  Id = @Id
+
+GO
+
+create procedure PMT_Get_QBCodesByPortalId
+
+    @PortalId int
+
+as
+
+select * from   PMT_QBCodes
+where  PortalId = @PortalId
+
+GO
+
+create procedure PMT_DeleteQBCode
+
+    @Id int
+
+as
+
+delete
+from   PMT_QBCodes
+where  Id = @Id
+
+GO
+
+create procedure PMT_UpdateQBCode
+	@Id int,
+	@PortalId int,
+	@Type int,
+	@QBCode nvarchar(255),
+	@MediaType int,
+	@MinLength nvarchar(255),
+	@MaxLength nvarchar(255),
+	@CreatedById int,
+	@DateCreated DateTime,
+	@LastModifiedById int,
+	@LastModifiedDate DateTime
+as
+
+UPDATE PMT_QBCodes
+set	PortalId		 = @PortalId,
+	Type	  = @Type,
+	QBCode	  = @QBCode,
+	MediaType = @MediaType,
+	MinLength = @MinLength,
+	MaxLength = @MaxLength,
+	CreatedById		 = @CreatedById,
+	DateCreated		 = @DateCreated,
+	LastModifiedById	 = @LastModifiedById,
+	LastModifiedDate	 = @LastModifiedDate
+WHERE Id = @Id
+
+GO
+
+
+create procedure PMT_AddQBCode
+	
+	@PortalId int,
+	@Type int,
+	@QBCode nvarchar(255),
+	@MediaType int,
+	@MinLength nvarchar(255),
+	@MaxLength nvarchar(255),
+	@CreatedById int,
+	@DateCreated DateTime,
+	@LastModifiedById int,
+	@LastModifiedDate DateTime
+
+as
+
+insert into PMT_QBCodes (
+	
+	PortalId,
+	Type,
+	QBCode,
+	MediaType,
+	MinLength,
+	MaxLength,
+	CreatedById,
+	DateCreated,
+	LastModifiedById,
+	LastModifiedDate
+) 
+values (
+	@PortalId,
+	@Type,
+	@QBCode,
+	@MediaType,
+	@MinLength,
+	@MaxLength,
+	@CreatedById,
+	@DateCreated,
+	@LastModifiedById,
+	@LastModifiedDate
+)
+
+select SCOPE_identity()
+
+GO
+
+create procedure PMT_DeleteQBCodeDeliveryMethodsByQBCodeId
+
+    @QBCodeId int
+
+as
+
+delete
+from   PMT_QBCodeDeliveryMethods
+where  QBCodeId = @QBCodeId
+
+GO
+
+create procedure PMT_AddQBCodeDeliveryMethod
+
+    @QBCodeId int,
+    @DeliveryMethodId int
+
+as
+
+Insert into PMT_QBCodeDeliveryMethods (
+	QBCodeId,
+	DeliveryMethodId
+	)
+Values (
+	@QBCodeId,
+	@DeliveryMethodId
+	)	
+GO
+
+create procedure PMT_DeleteQBCodeTapeFormatsByQBCodeId
+
+    @QBCodeId int
+
+as
+
+delete
+from   PMT_QBCodeTapeFormats
+where  QBCodeId = @QBCodeId
+
+GO
+
+create procedure PMT_AddQBCodeTapeFormat
+
+    @QBCodeId int,
+    @TapeFormatId int
+
+as
+
+Insert into PMT_QBCodeTapeFormats (
+	QBCodeId,
+	TapeFormatId
+	)
+Values (
+	@QBCodeId,
+	@TapeFormatId
+	)	
+GO
+
+create procedure PMT_DeleteQBCodeServicesByQBCodeId
+
+    @QBCodeId int
+
+as
+
+delete
+from   PMT_QBCodeServices
+where  QBCodeId = @QBCodeId
+
+GO
+
+create procedure PMT_AddQBCodeService
+
+    @QBCodeId int,
+    @ServiceId int
+
+as
+
+Insert into PMT_QBCodeServices (
+	QBCodeId,
+	ServiceId
+	)
+Values (
+	@QBCodeId,
+	@ServiceId
+	)	
+GO
+
+Create Procedure PMT_GetDeliveryMethodsByQBCodeId
+	@QBCodeId int
+as
+select * from PMT_DeliveryMethods as a
+INNER JOIN PMT_QBCodeDeliveryMethods as b
+on b.DeliveryMethodId = a.Id
+where b.QBCodeId = @QBCodeId
+GO
+
+Create Procedure PMT_GetTapeFormatsByQBCodeId
+	@QBCodeId int
+as
+select * from PMT_TapeFormats as a
+INNER JOIN PMT_QBCodeTapeFormats as b
+on b.TapeFormatId = a.Id
+where b.QBCodeId = @QBCodeId
+GO
+
+Create Procedure PMT_GetServicesByQBCodeId
+	@QBCodeId int
+as
+select * from PMT_Services as a
+INNER JOIN PMT_QBCodeServices as b
+on b.ServiceId = a.Id
+where b.QBCodeId = @QBCodeId
+GO
+
+create procedure PMT_Get_OpenTasks
+
+as
+
+select * from   PMT_WOTasks
+where isComplete = 0 and isDeleted = 0
+order by WOGroupId, Id
+
+GO
+
+create procedure PMT_Get_TasksByWOId
+
+    @WorkOrderId int
+
+as
+
+select * from   PMT_WOTasks
+where  WorkOrderId = @WorkOrderId
+order by WOGroupId, Id
+
+GO
+
+create procedure PMT_Get_TaskById
+
+    @Id int
+
+as
+
+select * from   PMT_WOTasks
+where  Id = @Id
+
+GO
+
+create procedure PMT_DeleteTask
+
+    @Id int
+
+as
+
+delete
+from   PMT_WOTasks
+where  Id = @Id
+
+GO
+
+create procedure PMT_UpdateTask
+	@Id int,
+	@PortalId int,
+	@Description nvarchar(MAX),
+	@WorkOrderId int,
+	@WOGroupId int,
+	@TaskType int,
+	@MasterId int,
+	@LibraryId int,
+	@StationId int,
+	@DeliveryMethodId int,
+	@DeliveryMethod nvarchar(255),
+	@DeliveryMethodResponse nvarchar(MAX),
+	@DeliveryOrderId nvarchar(255),
+	@DeliveryOrderDateCreated DateTime,
+	@DeliveryStatus nvarchar(255),
+	@isComplete bit,
+	@isDeleted bit,
+	@CreatedById int,
+	@DateCreated DateTime,
+	@LastModifiedById int,
+	@LastModifiedDate DateTime,
+	@QBCode nvarchar(255),
+	@QBCodeId int,
+	@DeliveryOrderDateComplete DateTime,
+	@Quantity int
+as
+
+UPDATE PMT_WOTasks
+set	PortalId		 = @PortalId,
+	Description = @Description,
+	WorkOrderId		 = @WorkOrderId,
+	WOGroupId		 = @WOGroupId,
+	TaskType		 = @TaskType,
+	MasterId		 = @MasterId,
+	LibraryId		 = @LibraryId,
+	StationId		 = @StationId,
+	DeliveryMethodId	 = @DeliveryMethodId,
+	DeliveryMethod		 = @DeliveryMethod,
+	DeliveryMethodResponse	 = @DeliveryMethodResponse,
+	DeliveryOrderId		 = @DeliveryOrderId,
+	DeliveryOrderDateCreated = @DeliveryOrderDateCreated,
+	DeliveryStatus		 = @DeliveryStatus,
+	isComplete		 = @isComplete,
+	isDeleted		 = @isDeleted,
+	CreatedById		 = @CreatedById,
+	DateCreated		 = @DateCreated,
+	LastModifiedById	 = @LastModifiedById,
+	LastModifiedDate	 = @LastModifiedDate,
+	QBCode = @QBCode,
+	QBCodeId = @QBCodeId,
+	DeliveryOrderDateComplete = @DeliveryOrderDateComplete,
+	Quantity = @Quantity
+WHERE Id = @Id
+
+GO
+
+
+create procedure PMT_AddTask
+	
+	@PortalId int,
+	@Description nvarchar(MAX),
+	@WorkOrderId int,
+	@WOGroupId int,
+	@TaskType int,
+	@MasterId int,
+	@LibraryId int,
+	@StationId int,
+	@DeliveryMethodId int,
+	@DeliveryMethod nvarchar(255),
+	@DeliveryMethodResponse nvarchar(MAX),
+	@DeliveryOrderId nvarchar(255),
+	@DeliveryOrderDateCreated DateTime,
+	@DeliveryStatus nvarchar(255),
+	@isComplete bit,
+	@isDeleted bit,
+	@CreatedById int,
+	@DateCreated DateTime,
+	@LastModifiedById int,
+	@LastModifiedDate DateTime,
+	@QBCode nvarchar(255),
+	@QBCodeId int,
+	@DeliveryOrderDateComplete DateTime,
+	@Quantity int
+
+as
+
+insert into PMT_WOTasks (
+	
+	PortalId,
+	Description,
+	WorkOrderId,
+	WOGroupId,
+	TaskType,
+	MasterId,
+	LibraryId,
+	StationId,
+	DeliveryMethodId,
+	DeliveryMethod,
+	DeliveryMethodResponse,
+	DeliveryOrderId,
+	DeliveryOrderDateCreated,
+	DeliveryStatus,
+	isComplete,
+	isDeleted,
+	CreatedById,
+	DateCreated,
+	LastModifiedById,
+	LastModifiedDate,
+	QBCode,
+	QBCodeId,
+	DeliveryOrderDateComplete,
+	Quantity
+) 
+values (
+	@PortalId,
+	@Description,
+	@WorkOrderId,
+	@WOGroupId,
+	@TaskType,
+	@MasterId,
+	@LibraryId,
+	@StationId,
+	@DeliveryMethodId,
+	@DeliveryMethod,
+	@DeliveryMethodResponse,
+	@DeliveryOrderId,
+	@DeliveryOrderDateCreated,
+	@DeliveryStatus,
+	@isComplete,
+	@isDeleted,
+	@CreatedById,
+	@DateCreated,
+	@LastModifiedById,
+	@LastModifiedDate,
+	@QBCode,
+	@QBCodeId,
+	@DeliveryOrderDateComplete,
+	@Quantity
+)
+
+select SCOPE_identity()
+
+GO
+
+create procedure PMT_Get_WOCommentsByWOId
+
+    @WorkOrderId int
+
+as
+
+select * from   PMT_WOComments
+where  WorkOrderId = @WorkOrderId
+order by Id
+
+GO
+
+create procedure PMT_Get_WOCommentById
+
+    @Id int
+
+as
+
+select * from   PMT_WOComments
+where  Id = @Id
+
+GO
+
+create procedure PMT_DeleteWOComment
+
+    @Id int
+
+as
+
+delete
+from   PMT_WOComments
+where  Id = @Id
+
+GO
+
+create procedure PMT_UpdateWOComment
+	@Id int,
+	@PortalId int,
+	@WorkOrderId int,
+	@WOTaskId int,
+	@Comment nvarchar(MAX),
+	@DisplayName nvarchar(255),
+	@CreatedById int,
+	@DateCreated DateTime,
+	@LastModifiedById int,
+	@LastModifiedDate DateTime,
+	@CommentType int
+as
+
+UPDATE PMT_WOComments
+set	PortalId	 = @PortalId,
+	WorkOrderId	 = @WorkOrderId,
+	WOTaskId	 = @WOTaskId,
+	Comment		 = @Comment,
+	DisplayName	 = @DisplayName,
+	CreatedById	 = @CreatedById,
+	DateCreated	 = @DateCreated,
+	LastModifiedById = @LastModifiedById,
+	LastModifiedDate = @LastModifiedDate,
+	CommentType = @CommentType
+WHERE Id = @Id
+
+GO
+
+
+create procedure PMT_AddWOComment
+
+	@PortalId int,
+	@WorkOrderId int,
+	@WOTaskId int,
+	@Comment nvarchar(MAX),
+	@DisplayName nvarchar(255),
+	@CreatedById int,
+	@DateCreated DateTime,
+	@LastModifiedById int,
+	@LastModifiedDate DateTime,
+	@CommentType int
+
+as
+
+insert into PMT_WOComments (
+	
+	PortalId,
+	WorkOrderId,
+	WOTaskId,
+	Comment,
+	DisplayName,
+	CreatedById,
+	DateCreated,
+	LastModifiedById,
+	LastModifiedDate,
+	CommentType
+) 
+values (
+	@PortalId,
+	@WorkOrderId,
+	@WOTaskId,
+	@Comment,
+	@DisplayName,
+	@CreatedById,
+	@DateCreated,
+	@LastModifiedById,
+	@LastModifiedDate,
+	@CommentType
+)
+
+select SCOPE_identity()
+
+GO
+
+create procedure PMT_Get_AdvertisersByAgencyId
+	@AgencyId int
+as
+
+Select * from PMT_Advertisers ad
+Inner join PMT_AdvertiserAgencies aa
+on ad.Id = aa.AdvertiserId
+WHERE aa.AgencyId = @AgencyId
+
+GO
+
+Create Procedure PMT_GetServicesByWOGroupId
+	@WOGroupId int
+as
+select * from PMT_Services as a
+INNER JOIN PMT_WOGroupServices as b
+on b.ServiceId = a.Id
+where b.WorkOrderGroupId = @WOGroupId
+GO
+
+create procedure PMT_DeleteWOGroupServicesByWOGroupId
+
+    @WorkOrderGroupId int
+
+as
+
+delete
+from   PMT_WOGroupServices
+where  WorkOrderGroupId = @WorkOrderGroupId
+
+GO
+
+create procedure PMT_AddWOGroupService
+
+    @WorkOrderGroupId int,
+    @ServiceId int
+
+as
+
+Insert into PMT_WOGroupServices (
+	WorkOrderGroupId,
+	ServiceId
+	)
+Values (
+	@WorkOrderGroupId,
+	@ServiceId
+	)	
+GO
+
+Create Procedure PMT_GetLibItemsByWOGroupId
+	@WOGroupId int
+as
+select * from PMT_LibraryItems as a
+INNER JOIN PMT_WOGroupLibItems as b
+on b.LibraryItemId = a.Id
+where b.WorkOrderGroupId = @WOGroupId
+GO
+
+create procedure PMT_DeleteWOGroupLibItemsByWOGroupId
+
+    @WorkOrderGroupId int
+
+as
+
+delete
+from   PMT_WOGroupLibItems
+where  WorkOrderGroupId = @WorkOrderGroupId
+
+GO
+
+create procedure PMT_AddWOGroupLibItem
+
+    @WorkOrderGroupId int,
+    @LibraryItemId int
+
+as
+
+Insert into PMT_WOGroupLibItems (
+	WorkOrderGroupId,
+	LibraryItemId
+	)
+Values (
+	@WorkOrderGroupId,
+	@LibraryItemId
+	)	
+GO
+
+create procedure PMT_Get_WorkOrderGroupsByWOId
+
+    @WorkOrderId int
+
+as
+
+select * from   PMT_WorkOrderGroups
+where  WorkOrderId = @WorkOrderId
+
+GO
+
+create procedure PMT_Get_WorkOrderGroupById
+
+    @Id int
+
+as
+
+select * from   PMT_WorkOrderGroups
+where  Id = @Id
+
+GO
+
+create procedure PMT_DeleteWorkOrderGroup
+
+    @Id int
+
+as
+
+delete
+from   PMT_WorkOrderGroups
+where  Id = @Id
+
+GO
+
+create procedure PMT_UpdateWorkOrderGroup
+	@Id int,
+	@PortalId int,
+	@WorkOrderId int,
+	@MasterId int,
+	@GroupType int,
+	@GroupName nvarchar(255),
+	@Comments nvarchar(MAX),
+	@CreatedById int,
+	@DateCreated DateTime,
+	@LastModifiedById int,
+	@LastModifiedDate DateTime
+as
+
+UPDATE PMT_WorkOrderGroups
+set	PortalId	 = @PortalId,
+	WorkOrderId	 = @WorkOrderId,
+	MasterId	 = @MasterId,
+	GroupType	 = @GroupType,
+	GroupName 	 = @GroupName,
+	Comments 	 = @Comments,
+	CreatedById	 = @CreatedById,
+	DateCreated	 = @DateCreated,
+	LastModifiedById = @LastModifiedById,
+	LastModifiedDate = @LastModifiedDate
+WHERE Id = @Id
+
+GO
+
+
+create procedure PMT_AddWorkOrderGroup
+
+	@PortalId int,
+	@WorkOrderId int,
+	@MasterId int,
+	@GroupType int,
+	@GroupName nvarchar(255),
+	@Comments nvarchar(MAX),
+	@CreatedById int,
+	@DateCreated DateTime,
+	@LastModifiedById int,
+	@LastModifiedDate DateTime
+
+as
+
+insert into PMT_WorkOrderGroups (
+	PortalId,
+	WorkOrderId,
+	MasterId,
+	GroupType,	
+	GroupName,	
+	Comments,	
+	CreatedById,
+	DateCreated,
+	LastModifiedById,
+	LastModifiedDate	
+) 
+values (
+	@PortalId,
+	@WorkOrderId,
+	@MasterId,
+	@GroupType,	
+	@GroupName,	
+	@Comments,
+	@CreatedById,
+	@DateCreated,	
+	@LastModifiedById,
+	@LastModifiedDate
+)
+
+select SCOPE_identity()
+
+GO
+
+create procedure PMT_Get_WorkOrderGroupStationsByGroupId
+
+    @GroupId int
+
+as
+
+select * from   PMT_WorkOrderGroupStations
+where  WOGroupId = @GroupId
+
+GO
+
+create procedure PMT_Get_WorkOrderGroupStationById
+
+    @Id int
+
+as
+
+select * from   PMT_WorkOrderGroupStations
+where  Id = @Id
+
+GO
+
+create procedure PMT_DeleteWorkOrderGroupStation
+
+    @Id int
+
+as
+
+delete
+from   PMT_WorkOrderGroupStations
+where  Id = @Id
+
+GO
+
+create procedure PMT_DeleteWorkOrderGroupStationByGroupId
+
+    @GroupId int
+
+as
+
+delete
+from   PMT_WorkOrderGroupStations
+where  WOGroupId = @GroupId
+
+GO
+
+create procedure PMT_DeleteWorkOrderGroupStationByWOId
+
+    @WorkOrderId int
+
+as
+
+delete
+from   PMT_WorkOrderGroupStations
+where  WorkOrderId = @WorkOrderId
+
+GO
+
+create procedure PMT_UpdateWorkOrderGroupStation
+	@Id int,
+	@PortalId int,
+	@WOGroupId int,
+	@WorkOrderId int,
+	@StationId int,
+	@DeliveryMethod nvarchar(255),
+	@ShippingMethodId int,
+	@PriorityId int,
+	@CreatedById int,
+	@DateCreated DateTime,
+	@LastModifiedById int,
+	@LastModifiedDate DateTime,
+	@Quantity int
+as
+
+UPDATE PMT_WorkOrderGroupStations
+set	PortalId	 = @PortalId,
+	WOGroupId	 = @WOGroupId,
+	WorkOrderId	 = @WorkOrderId,
+	StationId	 = @StationId,
+	DeliveryMethod = @DeliveryMethod,
+	ShippingMethodId = @ShippingMethodId,
+	PriorityId	 = @PriorityId,
+	CreatedById	 = @CreatedById,
+	DateCreated	 = @DateCreated,
+	LastModifiedById = @LastModifiedById,
+	LastModifiedDate = @LastModifiedDate,
+	Quantity = @Quantity
+WHERE Id = @Id
+
+GO
+
+
+create procedure PMT_AddWorkOrderGroupStation
+
+	@PortalId int,
+	@WOGroupId int,
+	@WorkOrderId int,
+	@StationId int,
+	@DeliveryMethod nvarchar(255),
+	@ShippingMethodId int,
+	@PriorityId int,
+	@CreatedById int,
+	@DateCreated DateTime,
+	@LastModifiedById int,
+	@LastModifiedDate DateTime,
+	@Quantity int
+
+as
+
+insert into PMT_WorkOrderGroupStations (
+	PortalId,
+	WOGroupId,
+	WorkOrderId,
+	StationId,
+	DeliveryMethod,
+	ShippingMethodId,
+	PriorityId,
+	CreatedById,
+	DateCreated,
+	LastModifiedById,
+	LastModifiedDate,
+	Quantity
+) 
+values (
+	@PortalId,
+	@WOGroupId,
+	@WorkOrderId,
+	@StationId,
+	@DeliveryMethod,
+	@ShippingMethodId,
+	@PriorityId,
+	@CreatedById,
+	@DateCreated,
+	@LastModifiedById,
+	@LastModifiedDate,
+	@Quantity
+)
+
+select SCOPE_identity()
+
+GO
+
+create procedure PMT_Get_WorkOrdersByPortalId
+
+    @PortalId int
+
+as
+
+select * from   PMT_WorkOrders
+where  PortalId = @PortalId
+Order By DateCreated DESC
+
+GO
+
+create procedure PMT_Get_WorkOrderById
+
+    @Id int
+
+as
+
+select * from   PMT_WorkOrders
+where  Id = @Id
+
+GO
+
+create procedure PMT_DeleteWorkOrder
+
+    @Id int
+
+as
+
+delete
+from   PMT_WorkOrders
+where  Id = @Id
+
+GO
+
+create procedure PMT_UpdateWorkOrder
+	@Id int,
+	@PortalId int,
+	@Description nvarchar(MAX),
+	@PONumber nvarchar(255),
+	@InvoiceNumber nvarchar(255),
+	@AdvertiserId int,
+	@AgencyId int,
+	@BillToId int,
+	@Notes nvarchar(MAX),
+	@CreatedById int,
+	@DateCreated DateTime,
+	@LastModifiedById int,
+	@LastModifiedDate DateTime,
+	@AssignedTo int,
+	@Status nvarchar(255),
+	@Priority nvarchar(255)
+as
+
+UPDATE PMT_WorkOrders
+set	PortalId	 = @PortalId,
+	Description	 = @Description,
+	PONumber	 = @PONumber,
+	InvoiceNumber	 = @InvoiceNumber,
+	AdvertiserId	 = @AdvertiserId,
+	AgencyId	 = @AgencyId,
+	BillToId	 = @BillToId,
+	Notes		 = @Notes,
+	CreatedById	 = @CreatedById,
+	DateCreated	 = @DateCreated,
+	LastModifiedById = @LastModifiedById,
+	LastModifiedDate = @LastModifiedDate,
+	AssignedTo = @AssignedTo,
+	Status = @Status,
+	Priority = @Priority
+WHERE Id = @Id
+
+GO
+
+
+create procedure PMT_AddWorkOrder
+
+	@PortalId int,
+	@Description nvarchar(MAX),
+	@PONumber nvarchar(255),
+	@InvoiceNumber nvarchar(255),
+	@AdvertiserId int,
+	@AgencyId int,
+	@BillToId int,
+	@Notes nvarchar(MAX),
+	@CreatedById int,
+	@DateCreated DateTime,
+	@LastModifiedById int,
+	@LastModifiedDate DateTime,
+	@AssignedTo int,
+	@Status nvarchar(255),
+	@Priority nvarchar(255)
+
+as
+
+insert into PMT_WorkOrders (
+	PortalId,
+	Description,
+	PONumber,
+	InvoiceNumber,
+	AdvertiserId,
+	AgencyId,
+	BillToId,
+	Notes,
+	CreatedById,
+	DateCreated,
+	LastModifiedById,
+	LastModifiedDate,
+	AssignedTo,
+	Status,
+	Priority
+) 
+values (
+	@PortalId,
+	@Description,
+	@PONumber,
+	@InvoiceNumber,
+	@AdvertiserId,
+	@AgencyId,
+	@BillToId,
+	@Notes,
+	@CreatedById,
+	@DateCreated,
+	@LastModifiedById,
+	@LastModifiedDate,
+	@AssignedTo,
+	@Status,
+	@Priority
+)
+
+select SCOPE_identity()
+
+GO
+
+create procedure PMT_Get_ServicesByPortalId
+
+    @PortalId int
+
+as
+
+select * from   PMT_Services
+where  PortalId = @PortalId
+Order By ServiceName
+
+GO
+
+create procedure PMT_Get_ServiceById
+
+    @Id int
+
+as
+
+select * from   PMT_Services
+where  Id = @Id
+
+GO
+
+create procedure PMT_DeleteService
+
+    @Id int
+
+as
+
+delete
+from   PMT_Services
+where  Id = @Id
+
+GO
+
+create procedure PMT_UpdateService
+	@Id int,
+	@PortalId int,
+	@ServiceName nvarchar(255),
+	@BillingCode nvarchar(255),
+	@CreatedById int,
+	@DateCreated DateTime,
+	@LastModifiedById int,
+	@LastModifiedDate DateTime
+as
+
+UPDATE PMT_Services
+set	PortalId	 = @PortalId,
+	ServiceName	 = @ServiceName,
+	BillingCode	 = @BillingCode,
+	CreatedById	 = @CreatedById,
+	DateCreated	 = @DateCreated,
+	LastModifiedById = @LastModifiedById,
+	LastModifiedDate = @LastModifiedDate
+WHERE Id = @Id
+
+GO
+
+
+create procedure PMT_AddService
+
+	@PortalId int,
+	@ServiceName nvarchar(255),
+	@BillingCode nvarchar(255),
+	@CreatedById int,
+	@DateCreated DateTime,
+	@LastModifiedById int,
+	@LastModifiedDate DateTime
+
+as
+
+insert into PMT_Services (
+	PortalId,
+	ServiceName,
+	BillingCode,
+	CreatedById,
+	DateCreated,
+	LastModifiedById,
+	LastModifiedDate
+) 
+values (
+	@PortalId,
+	@ServiceName,
+	@BillingCode,
+	@CreatedById,
+	@DateCreated,
+	@LastModifiedById,
+	@LastModifiedDate
+)
+
+select SCOPE_identity()
+
+GO
+
+create procedure PMT_GetLibraryItemsByPortalId
+
+    @PortalId int
+
+as
+
+select * from   PMT_LibraryItems
+where  PortalId = @PortalId
+
+GO
+
+create procedure PMT_Get_LibraryItemById
+
+    @Id int
+
+as
+
+select * from   PMT_LibraryItems
+where  Id = @Id
+
+GO
+
+create procedure PMT_DeleteLibraryItem
+
+    @Id int
+
+as
+
+delete
+from   PMT_LibraryItems
+where  Id = @Id
+
+GO
+
+create procedure PMT_UpdateLibraryItem
+	@Id int,
+	@PortalId int,
+	@AdvertiserId int,
+	@AgencyId int,
+	@ISCICode nvarchar(255),
+	@Filename nvarchar(255),
+	@Title nvarchar(255),
+	@ProductDescription nvarchar(MAX),
+	@MediaLength nvarchar(100),
+	@MediaType nvarchar(100),
+	@Encode nvarchar(100),
+	@Standard nvarchar(100),
+	@CustomerReference nvarchar(255),
+	@PMTMediaId nvarchar(255),
+	@MasterId int,
+	@DateCreated DateTime,
+	@MediaIndex int,
+	@Reel int,
+	@TapeCode nvarchar(255),
+	@Position int,
+	@VaultId nvarchar(255),
+	@Location nvarchar(255),
+	@Status nvarchar(255),
+	@Comment text,
+	@ClosedCaptioned nvarchar(255),
+	@CreatedById int,
+	@LastModifiedById int,
+	@LastModifiedDate DateTime
+
+as
+
+UPDATE PMT_LibraryItems
+set		PortalId =	      @PortalId,
+		AdvertiserId =	      @AdvertiserId,
+		AgencyId =	      @AgencyId,
+		ISCICode =	      @ISCICode,
+		Filename =	      @Filename,
+		Title =		      @Title,
+		ProductDescription =  @ProductDescription,
+		MediaLength =	      @MediaLength,
+		MediaType =	      @MediaType,
+		Encode =	      @Encode,
+		Standard =	      @Standard,
+		CustomerReference =   @CustomerReference,
+		PMTMediaId =	      @PMTMediaId,
+		MasterId =	      @MasterId,
+		DateCreated =	      @DateCreated,
+		MediaIndex =	      @MediaIndex,
+		Reel =		      @Reel,
+		TapeCode =	      @TapeCode,
+		Position =	      @Position,
+		VaultId =	      @VaultId,
+		Location =	      @Location,
+		Status =	      @Status,
+		Comment =	      @Comment,
+		ClosedCaptioned =     @ClosedCaptioned,
+		CreatedById =	      @CreatedById,
+		LastModifiedById =    @LastModifiedById,
+		LastModifiedDate =    @LastModifiedDate
+WHERE Id = @Id
+
+GO
+
+
+create procedure PMT_AddLibraryItem
+
+	@PortalId int,
+	@AdvertiserId int,
+	@AgencyId int,
+	@ISCICode nvarchar(255),
+	@Filename nvarchar(255),
+	@Title nvarchar(255),
+	@ProductDescription nvarchar(MAX),
+	@MediaLength nvarchar(100),
+	@MediaType nvarchar(100),
+	@Encode nvarchar(100),
+	@Standard nvarchar(100),
+	@CustomerReference nvarchar(255),
+	@PMTMediaId nvarchar(255),
+	@MasterId int,
+	@DateCreated DateTime,
+	@MediaIndex int,
+	@Reel int,
+	@TapeCode nvarchar(255),
+	@Position int,
+	@VaultId nvarchar(255),
+	@Location nvarchar(255),
+	@Status nvarchar(255),
+	@Comment text,
+	@ClosedCaptioned nvarchar(255),
+	@CreatedById int,
+	@LastModifiedById int,
+	@LastModifiedDate DateTime
+
+as
+
+insert into PMT_LibraryItems (
+	PortalId,
+	AdvertiserId,
+	AgencyId,
+	ISCICode,
+	Filename,
+	Title,
+	ProductDescription,
+	MediaLength,
+	MediaType,
+	Encode,
+	Standard,
+	CustomerReference,
+	PMTMediaId,
+	MasterId,
+	DateCreated,
+	MediaIndex,
+	Reel,
+	TapeCode,
+	Position,
+	VaultId,
+	Location,
+	Status,
+	Comment,
+	ClosedCaptioned,
+	CreatedById,
+	LastModifiedById,
+	LastModifiedDate
+) 
+values (
+	@PortalId,
+	@AdvertiserId,
+	@AgencyId,
+	@ISCICode,
+	@Filename,
+	@Title,
+	@ProductDescription,
+	@MediaLength,
+	@MediaType,
+	@Encode,
+	@Standard,
+	@CustomerReference,
+	@PMTMediaId,
+	@MasterId,
+	@DateCreated,
+	@MediaIndex,
+	@Reel,
+	@TapeCode,
+	@Position,
+	@VaultId,
+	@Location,
+	@Status,
+	@Comment,
+	@ClosedCaptioned,
+	@CreatedById,
+	@LastModifiedById,
+	@LastModifiedDate
+)
+
+select SCOPE_identity()
+
+GO
+
+Create Procedure PMT_GetMaxPMTMediaId
+	@PortalId int
+as
+Select MAX(PMTMediaId) from PMT_MasterItems where PMTMediaId like 'S[A-Y][0-9]%' and PortalId = @PortalId
+GO
+
+Create Procedure PMT_GetMaxLabelNumber
+	@PortalId int
+as
+Select MAX(LabelNumber) from PMT_Labels where PortalId = @PortalId
+GO
+
+Create Procedure PMT_GetAdvertisersByUser
+	@UserId int
+as
+select * from PMT_Advertisers as a
+INNER JOIN PMT_UsersInAdvertisers as b
+on b.AdvertiserId = a.Id
+where b.UserId = @UserId
+GO
+
+Create Procedure PMT_DeleteUserFromAdvertisers
+	@UserId int
+as
+delete from PMT_UsersInAdvertisers
+where UserId = @UserId
+GO
+
+create procedure PMT_AddUserInAdvertiser
+    @UserId int,
+    @AdvertiserId int
+as
+Insert into PMT_UsersInAdvertisers (
+	UserId,
+	AdvertiserId
+	)
+Values (
+	@UserId,
+	@AdvertiserId
+	)
+GO
+
+Create Procedure PMT_GetAgenciesByUser
+	@UserId int
+as
+select * from PMT_Agencies as a
+INNER JOIN PMT_UsersInAgencies as b
+on b.AgencyId = a.Id
+where b.UserId = @UserId
+GO
+
+Create Procedure PMT_DeleteUserFromAgencies
+	@UserId int
+as
+delete from PMT_UsersInAgencies
+where UserId = @UserId
+GO
+
+create procedure PMT_AddUserInAgency
+    @UserId int,
+    @AgencyId int
+as
+Insert into PMT_UsersInAgencies (
+	UserId,
+	AgencyId
+	)
+Values (
+	@UserId,
+	@AgencyId
+	)
+GO
+
+Create Procedure PMT_GetMasterItemAgencies
+
+as
+
+select * from PMT_MasterItemAgencies
+
+GO
+
+Create Procedure PMT_GetAdvertiserAgencies
+
+as
+
+select * from PMT_AdvertiserAgencies
+
+GO
+
+create procedure PMT_Get_AgencyIdsByMasterItemId
+	@MasterItemId int
+as
+
+select AgencyId from PMT_MasterItemAgencies
+where MasterItemId = @MasterItemId
+
+GO
+
+create procedure PMT_Get_AgenciesByMasterItemId
+	@MasterItemId int
+as
+
+Select * from PMT_Agencies ag
+Inner join PMT_MasterItemAgencies aa
+on ag.Id = aa.AgencyId
+WHERE aa.MasterItemId = @MasterItemId
+
+GO
+
+create procedure PMT_DeleteMasterItemAgencyByMasterItemId
+
+    @MasterItemId int
+
+as
+
+delete
+from   PMT_MasterItemAgencies
+where  MasterItemId = @MasterItemId
+
+GO
+
+create procedure PMT_AddMasterItemAgency
+
+    @MasterItemId int,
+    @AgencyId int
+
+as
+
+Insert into PMT_MasterItemAgencies (
+	MasterItemId,
+	AgencyId
+	)
+Values (
+	@MasterItemId,
+	@AgencyId
+	)	
+
+GO
+
+create procedure PMT_Get_AgencyIdsByAdvertiserId
+	@AdvertiserId int
+as
+
+select AgencyId from PMT_AdvertiserAgencies
+where AdvertiserId = @AdvertiserId
+
+GO
+
+create procedure PMT_Get_AgenciesByAdvertiserId
+	@AdvertiserId int
+as
+
+Select * from PMT_Agencies ag
+Inner join PMT_AdvertiserAgencies aa
+on ag.Id = aa.AgencyId
+WHERE aa.AdvertiserId = @AdvertiserID
+
+GO
+
+create procedure PMT_DeleteAdvertiserAgencyByAdvertiserId
+
+    @AdvertiserId int
+
+as
+
+delete
+from   PMT_AdvertiserAgencies
+where  AdvertiserId = @AdvertiserId
+
+GO
+
+create procedure PMT_AddAdvertiserAgency
+
+    @AdvertiserId int,
+    @AgencyId int
+
+as
+
+Insert into PMT_AdvertiserAgencies (
+	AdvertiserId,
+	AgencyId
+	)
+Values (
+	@AdvertiserId,
+	@AgencyId
+	)	
+
+GO
+
+create procedure PMT_Get_MasterItemsByPortalId
+
+    @PortalId int
+
+as
+
+select * from   PMT_MasterItems
+where  PortalId = @PortalId
+Order By Title
+
+GO
+
+create procedure PMT_Get_MasterItemById
+
+    @Id int
+
+as
+
+select * from   PMT_MasterItems
+where  Id = @Id
+
+GO
+
+create procedure PMT_DeleteMasterItem
+
+    @Id int
+
+as
+
+delete
+from   PMT_MasterItems
+where  Id = @Id
+
+GO
+
+create procedure PMT_UpdateMasterItem
+	@Id int,
+	@PortalId int,
+	@Filename nvarchar(255),
+	@AdvertiserId int,
+	@Title nvarchar(255),
+	@MediaType int,
+	@Encode int,
+	@Standard nvarchar(100),
+	@Length nvarchar(100),
+	@CustomerId nvarchar(255),
+	@PMTMediaId nvarchar(255),
+	@Reel int,
+	@TapeCode nvarchar(255),
+	@Position int,
+	@VaultId nvarchar(255),
+	@Location nvarchar(255),
+	@Comment text,
+	@ClosedCaptioned bit,
+	@CreatedById int,
+	@DateCreated DateTime,
+	@LastModifiedById int,
+	@LastModifiedDate DateTime,
+	@CheckListForm varchar(MAX),
+	@isApproved bit,
+	@BillToId int,
+	@hasChecklist bit
+
+as
+
+UPDATE PMT_MasterItems
+set		PortalId	  = @PortalId,
+		Filename	  = @Filename,
+		AdvertiserId	  = @AdvertiserId,
+		Title		  = @Title,
+		MediaType	  = @MediaType,
+		Encode		  = @Encode,
+		Standard	  = @Standard,
+		Length		  = @Length,
+		CustomerId	  = @CustomerId,
+		PMTMediaId	  = @PMTMediaId,
+		Reel		  = @Reel,
+		TapeCode	  = @TapeCode,
+		Position	  = @Position,
+		VaultId		  = @VaultId,
+		Location	  = @Location,
+		Comment		  = @Comment,
+		ClosedCaptioned	  = @ClosedCaptioned,
+		CreatedById	  = @CreatedById,
+		DateCreated	  = @DateCreated,
+		LastModifiedById  = @LastModifiedById,
+		LastModifiedDate  = @LastModifiedDate,
+		CheckListForm = @CheckListForm,
+		isApproved = @isApproved,
+		BillToId = @BillToId,
+		hasChecklist = @hasChecklist
+WHERE Id = @Id
+
+Update PMT_LibraryItems
+set PMTMediaId = @PMTMediaId
+where MasterId = @Id
+
+GO
+
+
+create procedure PMT_AddMasterItem
+
+	@PortalId int,
+	@Filename nvarchar(255),
+	@AdvertiserId int,
+	@Title nvarchar(255),
+	@MediaType int,
+	@Encode int,
+	@Standard nvarchar(100),
+	@Length nvarchar(100),
+	@CustomerId nvarchar(255),
+	@PMTMediaId nvarchar(255),
+	@Reel int,
+	@TapeCode nvarchar(255),
+	@Position int,
+	@VaultId nvarchar(255),
+	@Location nvarchar(255),
+	@Comment text,
+	@ClosedCaptioned bit,
+	@CreatedById int,
+	@DateCreated DateTime,
+	@LastModifiedById int,
+	@LastModifiedDate DateTime,
+	@CheckListForm varchar(MAX),
+	@isApproved bit,
+	@BillToId int,
+	@hasChecklist bit
+
+as
+
+insert into PMT_MasterItems (
+	PortalId,
+	Filename,
+	AdvertiserId,
+	Title,
+	MediaType,
+	Encode,
+	Standard,
+	Length,
+	CustomerId,
+	PMTMediaId,
+	Reel,
+	TapeCode,
+	Position,
+	VaultId,
+	Location,
+	Comment,
+	ClosedCaptioned,
+	CreatedById,
+	DateCreated,
+	LastModifiedById,
+	LastModifiedDate,
+	CheckListForm,
+	isApproved,
+	BillToId,
+	hasChecklist
+) 
+values (
+	@PortalId,
+	@Filename,
+	@AdvertiserId,
+	@Title,
+	@MediaType,
+	@Encode,
+	@Standard,
+	@Length,
+	@CustomerId,
+	@PMTMediaId,
+	@Reel,
+	@TapeCode,
+	@Position,
+	@VaultId,
+	@Location,
+	@Comment,
+	@ClosedCaptioned,
+	@CreatedById,
+	@DateCreated,
+	@LastModifiedById,
+	@LastModifiedDate,
+	@CheckListForm,
+	@isApproved,
+	@BillToId,
+	@hasChecklist
+)
+
+select SCOPE_identity()
+
+GO
+
+create procedure PMT_Get_LabelsByPortalId
+
+    @PortalId int
+
+as
+
+select * from   PMT_Labels
+where  PortalId = @PortalId
+
+GO
+
+create procedure PMT_Get_LabelById
+
+    @Id int
+
+as
+
+select * from   PMT_Labels
+where  Id = @Id
+
+GO
+
+create procedure PMT_DeleteLabel
+
+    @Id int
+
+as
+
+delete
+from   PMT_Labels
+where  Id = @Id
+
+GO
+
+create procedure PMT_UpdateLabel
+	@Id int,
+	@PortalId int,
+	@UserType nvarchar(255),
+	@UserId int,
+	@CampaignId int,
+	@AgencyName nvarchar(255),
+	@AgencyId int,
+	@AdvertiserName nvarchar(255),
+	@AdvertiserId int,
+	@TapeFormat int,
+	@Title nvarchar(255),
+	@Description text,
+	@ISCICode nvarchar(255),
+	@PMTMediaId nvarchar(255),
+	@MediaLength nvarchar(255),
+	@Standard nvarchar(50),
+	@LabelNumber bigint,
+	@CampaignMediaId int,
+	@Notes text,
+	@CreatedById int,
+	@DateCreated DateTime,
+	@LastModifiedById int,
+	@LastModifiedDate DateTime
+
+as
+
+UPDATE PMT_Labels
+set	PortalId	 = @PortalId,
+	UserType	 = @UserType,
+	UserId		 = @UserId,
+	CampaignId	 = @CampaignId,
+	AgencyName	 = @AgencyName,
+	AgencyId	 = @AgencyId,
+	AdvertiserName	 = @AdvertiserName,
+	AdvertiserId	 = @AdvertiserId,
+	TapeFormat	 = @TapeFormat,
+	Title		 = @Title,
+	Description	 = @Description,
+	ISCICode	 = @ISCICode,
+	PMTMediaId	 = @PMTMediaId,
+	MediaLength	 = @MediaLength,
+	Standard	 = @Standard,
+	LabelNumber	 = @LabelNumber,
+	CampaignMediaId	 = @CampaignMediaId,
+	Notes		 = @Notes,
+	CreatedById	 = @CreatedById,
+	DateCreated	 = @DateCreated,
+	LastModifiedById = @LastModifiedById,
+	LastModifiedDate = @LastModifiedDate
+WHERE Id = @Id
+
+GO
+
+
+create procedure PMT_AddLabel
+
+	@PortalId int,
+	@UserType nvarchar(255),
+	@UserId int,
+	@CampaignId int,
+	@AgencyName nvarchar(255),
+	@AgencyId int,
+	@AdvertiserName nvarchar(255),
+	@AdvertiserId int,
+	@TapeFormat int,
+	@Title nvarchar(255),
+	@Description text,
+	@ISCICode nvarchar(255),
+	@PMTMediaId nvarchar(255),
+	@MediaLength nvarchar(255),
+	@Standard nvarchar(50),
+	@LabelNumber bigint,
+	@CampaignMediaId int,
+	@Notes text,
+	@CreatedById int,
+	@DateCreated DateTime,
+	@LastModifiedById int,
+	@LastModifiedDate DateTime
+
+as
+
+insert into PMT_Labels (
+	PortalId,
+	UserType,
+	UserId,
+	CampaignId,
+	AgencyName,
+	AgencyId,
+	AdvertiserName,
+	AdvertiserId,
+	TapeFormat,
+	Title,
+	Description,
+	ISCICode,
+	PMTMediaId,
+	MediaLength,
+	Standard,
+	LabelNumber,
+	CampaignMediaId,
+	Notes,
+	CreatedById,
+	DateCreated,
+	LastModifiedById,
+	LastModifiedDate
+) 
+values (
+	@PortalId,
+	@UserType,
+	@UserId,
+	@CampaignId,
+	@AgencyName,
+	@AgencyId,
+	@AdvertiserName,
+	@AdvertiserId,
+	@TapeFormat,
+	@Title,
+	@Description,
+	@ISCICode,
+	@PMTMediaId,
+	@MediaLength,
+	@Standard,
+	@LabelNumber,
+	@CampaignMediaId,
+	@Notes,
+	@CreatedById,
+	@DateCreated,
+	@LastModifiedById,
+	@LastModifiedDate
+)
+
+select SCOPE_identity()
+
+GO
+
+create procedure PMT_Get_StationsInGroupById
+
+    @Id int
+
+as
+
+select s.Id, s.PortalId, s.MarketId, s.StationName, s.StationContact, s.CallLetter, s.MediaType, s.TapeFormat, s.Address1, s.Address2, s.City, s.State, s.Zip, s.Country, s.Phone, s.Fax, s.Email, s.SpecialInstructions, s.DeliveryMethods, s.Online, s.Status, s.CreatedById, s.DateCreated, s.LastModifiedById, s.LastModifiedDate, s.backupRequired from  PMT_Stations s
+inner join PMT_StationsInGroup sig
+on  sig.StationId = s.id
+WHERE sig.StationGroupId = @Id
+Order By s.StationName
+
+GO
+
+create procedure PMT_DeleteStationsInGroup
+
+    @StationId int,
+    @StationGroupId int
+
+as
+
+delete
+from   PMT_StationsInGroup
+where  StationId = @StationId AND StationGroupId = @StationGroupId
+
+GO
+
+create procedure PMT_DeleteStationsInGroupByGroup
+
+    @StationGroupId int
+
+as
+
+delete
+from   PMT_StationsInGroup
+where  StationGroupId = @StationGroupId
+
+GO
+
+create procedure PMT_AddStationsInGroup
+
+	@PortalId int,
+	@StationId int,
+	@StationGroupId int
+
+as
+
+insert into PMT_StationsInGroup (
+	PortalId,
+	StationId,
+	StationGroupId
+) 
+values (
+	@PortalId,
+	@StationId,
+	@StationGroupId
+)
+
+select SCOPE_identity()
+
+GO
+
+create procedure PMT_Get_StationGroupsByUserId
+
+    @UserId int
+
+as
+
+select * from   PMT_StationGroups
+where  CreatedById = @UserId
+Order By StationGroupName
+
+GO
+
+create procedure PMT_Get_StationGroupsByPortalId
+
+    @PortalId int
+
+as
+
+select * from   PMT_StationGroups
+where  PortalId = @PortalId
+Order By StationGroupName
+
+GO
+
+create procedure PMT_Get_StationGroupById
+
+    @Id int
+
+as
+
+select * from   PMT_StationGroups
+where  Id = @Id
+
+GO
+
+create procedure PMT_DeleteStationGroup
+
+    @Id int
+
+as
+
+delete
+from   PMT_StationGroups
+where  Id = @Id
+
+GO
+
+create procedure PMT_UpdateStationGroup
+	@Id int,
+	@PortalId int,
+	@StationGroupName nvarchar(255),
+	@Description text,
+	@AgencyId int,
+	@CreatedById int,
+	@DateCreated DateTime,
+	@LastModifiedById int,
+	@LastModifiedDate DateTime
+
+as
+
+UPDATE PMT_StationGroups
+set		PortalId	   = @PortalId,
+		StationGroupName   = @StationGroupName,
+		Description = @Description,
+		AgencyId = @AgencyId,
+		CreatedById	   = @CreatedById,
+		DateCreated	   = @DateCreated,
+		LastModifiedById   = @LastModifiedById,
+		LastModifiedDate   = @LastModifiedDate
+WHERE Id = @Id
+
+GO
+
+
+create procedure PMT_AddStationGroup
+
+	@PortalId int,
+	@StationGroupName nvarchar(255),
+	@Description text,
+	@AgencyId int,
+	@CreatedById int,
+	@DateCreated DateTime,
+	@LastModifiedById int,
+	@LastModifiedDate DateTime
+
+as
+
+insert into PMT_StationGroups (
+	PortalId,
+	StationGroupName,
+	Description,
+	AgencyId,
+	CreatedById,
+	DateCreated,
+	LastModifiedById,
+	LastModifiedDate
+) 
+values (
+	@PortalId,
+	@StationGroupName,
+	@Description,
+	@AgencyId,
+	@CreatedById,
+	@DateCreated,
+	@LastModifiedById,
+	@LastModifiedDate
+)
+
+select SCOPE_identity()
+
+GO
+
+create procedure PMT_Get_DeliveryMethodsByPortalId
+
+    @PortalId int
+
+as
+
+select * from   PMT_DeliveryMethods
+where  PortalId = @PortalId
+Order By Priority
+
+GO
+
+create procedure PMT_Get_DeliveryMethodById
+
+    @Id int
+
+as
+
+select * from   PMT_DeliveryMethods
+where  Id = @Id
+
+GO
+
+create procedure PMT_DeleteDeliveryMethod
+
+    @Id int
+
+as
+
+delete
+from   PMT_DeliveryMethods
+where  Id = @Id
+
+GO
+
+create procedure PMT_UpdateDeliveryMethod
+	@Id int,
+	@PortalId int,
+	@DeliveryMethod nvarchar(255),
+	@Priority nvarchar(255),
+	@CreatedById int,
+	@DateCreated DateTime,
+	@LastModifiedById int,
+	@LastModifiedDate DateTime
+
+as
+
+UPDATE PMT_DeliveryMethods
+set		PortalId	   = @PortalId,
+		DeliveryMethod	   = @DeliveryMethod,
+		Priority = @Priority,
+		CreatedById	   = @CreatedById,
+		DateCreated	   = @DateCreated,
+		LastModifiedById   = @LastModifiedById,
+		LastModifiedDate   = @LastModifiedDate
+WHERE Id = @Id
+
+GO
+
+
+create procedure PMT_AddDeliveryMethod
+
+	@PortalId int,
+	@DeliveryMethod nvarchar(255),
+	@Priority nvarchar(255),
+	@CreatedById int,
+	@DateCreated DateTime,
+	@LastModifiedById int,
+	@LastModifiedDate DateTime
+
+as
+
+insert into PMT_DeliveryMethods (
+	PortalId,
+	DeliveryMethod,
+	Priority,
+	CreatedById,
+	DateCreated,
+	LastModifiedById,
+	LastModifiedDate
+) 
+values (
+	@PortalId,
+	@DeliveryMethod,
+	@Priority,
+	@CreatedById,
+	@DateCreated,
+	@LastModifiedById,
+	@LastModifiedDate
+)
+
+select SCOPE_identity()
+
+GO
+
+create procedure PMT_Get_TapeFormatsByPortalId
+
+    @PortalId int
+
+as
+
+select * from   PMT_TapeFormats
+where  PortalId = @PortalId
+Order By TapeFormat
+
+GO
+
+create procedure PMT_Get_TapeFormatById
+
+    @Id int
+
+as
+
+select * from   PMT_TapeFormats
+where  Id = @Id
+
+GO
+
+create procedure PMT_DeleteTapeFormat
+
+    @Id int
+
+as
+
+delete
+from   PMT_TapeFormats
+where  Id = @Id
+
+GO
+
+create procedure PMT_UpdateTapeFormat
+	@Id int,
+	@PortalId int,
+	@TapeFormat nvarchar(255),
+	@Printer nvarchar(10),
+	@Label nvarchar(10),
+	@CreatedById int,
+	@DateCreated DateTime,
+	@LastModifiedById int,
+	@LastModifiedDate DateTime,
+	@Weight float,
+	@MaxPerPak int
+
+as
+
+UPDATE PMT_TapeFormats
+set		PortalId	   = @PortalId,
+		TapeFormat	   = @TapeFormat,
+		Printer = @Printer,
+		Label = @Label,
+		CreatedById	   = @CreatedById,
+		DateCreated	   = @DateCreated,
+		LastModifiedById   = @LastModifiedById,
+		LastModifiedDate   = @LastModifiedDate,
+		Weight = @Weight,
+		MaxPerPak = @MaxPerPak
+WHERE Id = @Id
+
+GO
+
+
+create procedure PMT_AddTapeFormat
+
+	@PortalId int,
+	@TapeFormat nvarchar(255),
+	@Printer nvarchar(10),
+	@Label nvarchar(10),
+	@CreatedById int,
+	@DateCreated DateTime,
+	@LastModifiedById int,
+	@LastModifiedDate DateTime,
+	@Weight float,
+	@MaxPerPak int
+
+as
+
+insert into PMT_TapeFormats (
+	PortalId,
+	TapeFormat,
+	Printer,
+	Label,
+	CreatedById,
+	DateCreated,
+	LastModifiedById,
+	LastModifiedDate,
+	Weight,
+	MaxPerPak
+) 
+values (
+	@PortalId,
+	@TapeFormat,
+	@Printer,
+	@Label,
+	@CreatedById,
+	@DateCreated,
+	@LastModifiedById,
+	@LastModifiedDate,
+	@Weight,
+	@MaxPerPak
+)
+
+select SCOPE_identity()
+
+GO
+
+create procedure PMT_Get_FreightTypesByPortalId
+
+    @PortalId int
+
+as
+
+select * from   PMT_FreightTypes
+where  PortalId = @PortalId
+Order By FreightType
+
+GO
+
+create procedure PMT_Get_FreightTypeById
+
+    @Id int
+
+as
+
+select * from   PMT_FreightTypes
+where  Id = @Id
+
+GO
+
+create procedure PMT_DeleteFreightType
+
+    @Id int
+
+as
+
+delete
+from   PMT_FreightTypes
+where  Id = @Id
+
+GO
+
+create procedure PMT_UpdateFreightType
+	@Id int,
+	@PortalId int,
+	@FreightType nvarchar(255),
+	@CreatedById int,
+	@DateCreated DateTime,
+	@LastModifiedById int,
+	@LastModifiedDate DateTime
+
+as
+
+UPDATE PMT_FreightTypes
+set		PortalId	   = @PortalId,
+		FreightType	   = @FreightType,
+		CreatedById	   = @CreatedById,
+		DateCreated	   = @DateCreated,
+		LastModifiedById   = @LastModifiedById,
+		LastModifiedDate   = @LastModifiedDate
+WHERE Id = @Id
+
+GO
+
+
+create procedure PMT_AddFreightType
+
+	@PortalId int,
+	@FreightType nvarchar(255),
+	@CreatedById int,
+	@DateCreated DateTime,
+	@LastModifiedById int,
+	@LastModifiedDate DateTime
+
+as
+
+insert into PMT_FreightTypes (
+	PortalId,
+	FreightType,
+	CreatedById,
+	DateCreated,
+	LastModifiedById,
+	LastModifiedDate
+) 
+values (
+	@PortalId,
+	@FreightType,
+	@CreatedById,
+	@DateCreated,
+	@LastModifiedById,
+	@LastModifiedDate
+)
+
+select SCOPE_identity()
+
+GO
+
+create procedure PMT_Get_CarrierTypesByPortalId
+
+    @PortalId int
+
+as
+
+select * from   PMT_CarrierTypes
+where  PortalId = @PortalId
+Order By CarrierType
+
+GO
+
+create procedure PMT_Get_CarrierTypeById
+
+    @Id int
+
+as
+
+select * from   PMT_CarrierTypes
+where  Id = @Id
+
+GO
+
+create procedure PMT_DeleteCarrierType
+
+    @Id int
+
+as
+
+delete
+from   PMT_CarrierTypes
+where  Id = @Id
+
+GO
+
+create procedure PMT_UpdateCarrierType
+	@Id int,
+	@PortalId int,
+	@CarrierType nvarchar(255),
+	@CreatedById int,
+	@DateCreated DateTime,
+	@LastModifiedById int,
+	@LastModifiedDate DateTime
+
+as
+
+UPDATE PMT_CarrierTypes
+set		PortalId	   = @PortalId,
+		CarrierType	   = @CarrierType,
+		CreatedById	   = @CreatedById,
+		DateCreated	   = @DateCreated,
+		LastModifiedById   = @LastModifiedById,
+		LastModifiedDate   = @LastModifiedDate
+WHERE Id = @Id
+
+GO
+
+
+create procedure PMT_AddCarrierType
+
+	@PortalId int,
+	@CarrierType nvarchar(255),
+	@CreatedById int,
+	@DateCreated DateTime,
+	@LastModifiedById int,
+	@LastModifiedDate DateTime
+
+as
+
+insert into PMT_CarrierTypes (
+	PortalId,
+	CarrierType,
+	CreatedById,
+	DateCreated,
+	LastModifiedById,
+	LastModifiedDate
+) 
+values (
+	@PortalId,
+	@CarrierType,
+	@CreatedById,
+	@DateCreated,
+	@LastModifiedById,
+	@LastModifiedDate
+)
+
+select SCOPE_identity()
+
+GO
+
+create procedure PMT_Get_ClientTypesByPortalId
+
+    @PortalId int
+
+as
+
+select * from   PMT_ClientTypes
+where  PortalId = @PortalId
+Order By ClientType
+
+GO
+
+create procedure PMT_Get_ClientTypeById
+
+    @Id int
+
+as
+
+select * from   PMT_ClientTypes
+where  Id = @Id
+
+GO
+
+create procedure PMT_DeleteClientType
+
+    @Id int
+
+as
+
+delete
+from   PMT_ClientTypes
+where  Id = @Id
+
+GO
+
+create procedure PMT_UpdateClientType
+	@Id int,
+	@PortalId int,
+	@ClientType nvarchar(255),
+	@CreatedById int,
+	@DateCreated DateTime,
+	@LastModifiedById int,
+	@LastModifiedDate DateTime
+
+as
+
+UPDATE PMT_ClientTypes
+set		PortalId	   = @PortalId,
+		ClientType	   = @ClientType,
+		CreatedById	   = @CreatedById,
+		DateCreated	   = @DateCreated,
+		LastModifiedById   = @LastModifiedById,
+		LastModifiedDate   = @LastModifiedDate
+WHERE Id = @Id
+
+GO
+
+
+create procedure PMT_AddClientType
+
+	@PortalId int,
+	@ClientType nvarchar(255),
+	@CreatedById int,
+	@DateCreated DateTime,
+	@LastModifiedById int,
+	@LastModifiedDate DateTime
+
+as
+
+insert into PMT_ClientTypes (
+	PortalId,
+	ClientType,
+	CreatedById,
+	DateCreated,
+	LastModifiedById,
+	LastModifiedDate
+) 
+values (
+	@PortalId,
+	@ClientType,
+	@CreatedById,
+	@DateCreated,
+	@LastModifiedById,
+	@LastModifiedDate
+)
+
+select SCOPE_identity()
+
+GO
+
+create procedure PMT_Get_StationsByPortalId
+
+    @PortalId int
+
+as
+
+select * from   PMT_Stations
+where  PortalId = @PortalId
+Order By StationName
+
+GO
+
+create procedure PMT_Get_StationsByPortalIdActive
+
+    @PortalId int
+
+as
+
+select * from   PMT_Stations
+where  PortalId = @PortalId AND Status = 1
+Order By StationName
+
+GO
+
+create procedure PMT_Get_StationById
+
+    @Id int
+
+as
+
+select * from   PMT_Stations
+where  Id = @Id
+
+GO
+
+create procedure PMT_DeleteStation
+
+    @Id int
+
+as
+
+delete
+from   PMT_Stations
+where  Id = @Id
+
+GO
+
+create procedure PMT_UpdateStation
+	@Id int,
+	@PortalId int,
+	@MarketId int,
+	@StationName nvarchar(255),
+	@StationContact nvarchar(255),
+	@CallLetter nvarchar(255),
+	@MediaType int,
+	@TapeFormat nvarchar(255),
+	@Address1 nvarchar(255),
+	@Address2 nvarchar(255),
+	@City nvarchar(255),
+	@State nvarchar(255),
+	@Zip nvarchar(255),
+	@Country nvarchar(255),
+	@Phone nvarchar(255),
+	@Fax nvarchar(255),
+	@Email nvarchar(255),
+	@SpecialInstructions text,
+	@DeliveryMethods nvarchar(255),
+	@Online bit,
+	@Status bit,
+	@AttentionLine nvarchar(255),
+	@CreatedById int,
+	@DateCreated DateTime,
+	@LastModifiedById int,
+	@LastModifiedDate DateTime,
+	@ProgramFormat nvarchar(255),
+	@AdDeliveryCallLetters nvarchar(255),
+	@OTSMHDCallLetters nvarchar(255),
+	@OTSMSDCallLetters nvarchar(255),
+	@JavelinCallLetters nvarchar(255),
+	@backupRequired bit
+
+as
+
+UPDATE PMT_Stations
+set		PortalId	    = @PortalId,
+		MarketId	    = @MarketId,
+		StationName	    = @StationName,
+		StationContact	    = @StationContact,
+		CallLetter	    = @CallLetter,
+		MediaType	    = @MediaType,
+		TapeFormat	    = @TapeFormat,
+		Address1	    = @Address1,
+		Address2	    = @Address2,
+		City		    = @City,
+		State		    = @State,
+		Zip		    = @Zip,
+		Country		    = @Country,
+		Phone		    = @Phone,
+		Fax		    = @Fax,
+		Email		    = @Email,
+		SpecialInstructions = @SpecialInstructions,
+		DeliveryMethods	    = @DeliveryMethods,
+		Online		    = @Online,
+		Status		    = @Status,
+		AttentionLine = @AttentionLine,
+		CreatedById	    = @CreatedById,
+		DateCreated	    = @DateCreated,
+		LastModifiedById    = @LastModifiedById,
+		LastModifiedDate    = @LastModifiedDate,
+		ProgramFormat	      =	@ProgramFormat,
+		AdDeliveryCallLetters =	@AdDeliveryCallLetters,
+		OTSMHDCallLetters     =	@OTSMHDCallLetters,
+		OTSMSDCallLetters     =	@OTSMSDCallLetters,
+		JavelinCallLetters    =	@JavelinCallLetters,
+		backupRequired = @backupRequired
+WHERE Id = @Id
+
+GO
+
+
+create procedure PMT_AddStation
+
+	@PortalId int,
+	@MarketId int,
+	@StationName nvarchar(255),
+	@StationContact nvarchar(255),
+	@CallLetter nvarchar(255),
+	@MediaType int,
+	@TapeFormat nvarchar(255),
+	@Address1 nvarchar(255),
+	@Address2 nvarchar(255),
+	@City nvarchar(255),
+	@State nvarchar(255),
+	@Zip nvarchar(255),
+	@Country nvarchar(255),
+	@Phone nvarchar(255),
+	@Fax nvarchar(255),
+	@Email nvarchar(255),
+	@SpecialInstructions text,
+	@DeliveryMethods nvarchar(255),
+	@Online bit,
+	@Status bit,
+	@AttentionLine nvarchar(255),
+	@CreatedById int,
+	@DateCreated DateTime,
+	@LastModifiedById int,
+	@LastModifiedDate DateTime,
+	@ProgramFormat nvarchar(255),
+	@AdDeliveryCallLetters nvarchar(255),
+	@OTSMHDCallLetters nvarchar(255),
+	@OTSMSDCallLetters nvarchar(255),
+	@JavelinCallLetters nvarchar(255),
+	@backupRequired bit
+as
+
+insert into PMT_Stations (
+	PortalId,
+	MarketId,
+	StationName,
+	StationContact,
+	CallLetter,
+	MediaType,
+	TapeFormat,
+	Address1,
+	Address2,
+	City,
+	State,
+	Zip,
+	Country,
+	Phone,
+	Fax,
+	Email,
+	SpecialInstructions,
+	DeliveryMethods,
+	Online,
+	Status,
+	AttentionLine,
+	CreatedById,
+	DateCreated,
+	LastModifiedById,
+	LastModifiedDate,
+	ProgramFormat,
+	AdDeliveryCallLetters,
+	OTSMHDCallLetters,
+	OTSMSDCallLetters,
+	JavelinCallLetters,
+	backupRequired
+) 
+values (
+	@PortalId,
+	@MarketId,
+	@StationName,
+	@StationContact,
+	@CallLetter,
+	@MediaType,
+	@TapeFormat,
+	@Address1,
+	@Address2,
+	@City,
+	@State,
+	@Zip,
+	@Country,
+	@Phone,
+	@Fax,
+	@Email,
+	@SpecialInstructions,
+	@DeliveryMethods,
+	@Online,
+	@Status,
+	@AttentionLine,
+	@CreatedById,
+	@DateCreated,
+	@LastModifiedById,
+	@LastModifiedDate,
+	@ProgramFormat,
+	@AdDeliveryCallLetters,
+	@OTSMHDCallLetters,
+	@OTSMSDCallLetters,
+	@JavelinCallLetters,
+	@backupRequired
+)
+
+select SCOPE_identity()
+
+GO
+
+create procedure PMT_Get_MarketsByPortalId
+
+    @PortalId int
+
+as
+
+select * from   PMT_Markets
+where  PortalId = @PortalId
+Order By MarketName
+
+GO
+
+create procedure PMT_Get_MarketById
+
+    @Id int
+
+as
+
+select * from   PMT_Markets
+where  Id = @Id
+
+GO
+
+create procedure PMT_DeleteMarket
+
+    @Id int
+
+as
+
+delete
+from   PMT_Markets
+where  Id = @Id
+
+GO
+
+create procedure PMT_UpdateMarket
+	@Id int,
+	@PortalId int,
+	@MarketName nvarchar(255),
+	@Description text,
+	@ParentId int,
+	@CreatedById int,
+	@DateCreated DateTime,
+	@LastModifiedById int,
+	@LastModifiedDate DateTime
+as
+
+UPDATE PMT_Markets
+set	PortalId	 = @PortalId,
+	MarketName	 = @MarketName,
+	Description	 = @Description,
+	ParentId     = @ParentId,
+	CreatedById	 = @CreatedById,
+	DateCreated	 = @DateCreated,
+	LastModifiedById = @LastModifiedById,
+	LastModifiedDate = @LastModifiedDate
+WHERE Id = @Id
+
+GO
+
+
+create procedure PMT_AddMarket
+
+	@PortalId int,
+	@MarketName nvarchar(255),
+	@Description text,
+	@ParentId int,
+	@CreatedById int,
+	@DateCreated DateTime,
+	@LastModifiedById int,
+	@LastModifiedDate DateTime
+
+as
+
+insert into PMT_Markets (
+	PortalId,
+	MarketName,
+	Description,
+	ParentId,
+	CreatedById,
+	DateCreated,
+	LastModifiedById,
+	LastModifiedDate
+) 
+values (
+	@PortalId,
+	@MarketName,
+	@Description,
+	@ParentId,
+	@CreatedById,
+	@DateCreated,
+	@LastModifiedById,
+	@LastModifiedDate
+)
+
+select SCOPE_identity()
+
+GO
+
+create procedure PMT_Get_AdvertisersByPortalId
+
+    @PortalId int
+
+as
+
+select * from   PMT_Advertisers
+where  PortalId = @PortalId
+Order By AdvertiserName
+
+GO
+
+create procedure PMT_Get_AdvertiserById
+
+    @Id int
+
+as
+
+select * from   PMT_Advertisers
+where  Id = @Id
+
+GO
+
+create procedure PMT_DeleteAdvertiser
+
+    @Id int
+
+as
+
+delete
+from   PMT_Advertisers
+where  Id = @Id
+
+GO
+
+
+create procedure PMT_UpdateAdvertiser
+	@Id int,
+	@PortalId int,
+	@Carrier int,
+	@Freight int,
+	@CarrierNumber nvarchar(255),
+	@AdvertiserName nvarchar(255),
+	@Address1 nvarchar(255),
+	@Address2 nvarchar(255),
+	@City nvarchar(255),
+	@State nvarchar(20),
+	@Zip nvarchar(20),
+	@Country nvarchar(255),
+	@Phone nvarchar(30),
+	@Fax nvarchar(30),
+	@ClientType int,
+	@CustomerReference nvarchar(255),
+	@QuickbooksListId nvarchar(255),
+	@QuickbooksEditSequence nvarchar(255),
+	@QuickbooksErrNum nvarchar(255),
+	@QuickbooksErrMsg nvarchar(255),
+	@CreatedById int,
+	@DateCreated DateTime,
+	@LastModifiedById int,
+	@LastModifiedDate DateTime
+
+as
+
+UPDATE PMT_Advertisers
+set		PortalId	   = @PortalId,  
+		Carrier		   = @Carrier,	  
+		Freight	   = @Freight,  
+		CarrierNumber	   = @CarrierNumber,
+		AdvertiserName	   = @AdvertiserName,
+		Address1	   = @Address1,
+		Address2	   = @Address2,
+		City		   = @City,
+		State		   = @State,
+		Zip		   = @Zip,
+		Country	   = @Country,
+		Phone		   = @Phone,
+		Fax		   = @Fax,
+		ClientType	   = @ClientType,
+		QuickbooksListId = @QuickbooksListId,
+		QuickbooksEditSequence = @QuickbooksEditSequence,
+		QuickbooksErrNum = @QuickbooksErrNum,
+		QuickbooksErrMsg = @QuickbooksErrMsg,
+		CustomerReference = @CustomerReference,
+		CreatedById	   = @CreatedById,  
+		DateCreated	   = @DateCreated,  
+		LastModifiedById  = @LastModifiedById,
+		LastModifiedDate  = @LastModifiedDate
+WHERE Id = @Id
+
+GO
+
+create procedure PMT_AddAdvertiser
+
+	@PortalId int,
+	@Carrier int,
+	@Freight int,
+	@CarrierNumber nvarchar(255),
+	@AdvertiserName nvarchar(255),
+	@Address1 nvarchar(255),
+	@Address2 nvarchar(255),
+	@City nvarchar(255),
+	@State nvarchar(20),
+	@Zip nvarchar(20),
+	@Country nvarchar(255),
+	@Phone nvarchar(30),
+	@Fax nvarchar(30),
+	@ClientType int,
+	@QuickbooksListId nvarchar(255),
+	@QuickbooksEditSequence nvarchar(255),
+	@QuickbooksErrNum nvarchar(255),
+	@QuickbooksErrMsg nvarchar(255),
+	@CustomerReference nvarchar(255),
+	@CreatedById int,
+	@DateCreated DateTime,
+	@LastModifiedById int,
+	@LastModifiedDate DateTime
+
+as
+
+insert into PMT_Advertisers (
+	PortalId,  
+	Carrier,	  
+	Freight,  
+	CarrierNumber,
+	AdvertiserName,
+	Address1,
+	Address2,
+	City,
+	State,
+	Zip,
+	Country,
+	Phone,
+	Fax,
+	ClientType,
+	QuickbooksListId,
+	QuickbooksEditSequence,
+	QuickbooksErrNum,
+	QuickbooksErrMsg,
+	CustomerReference,
+	CreatedById,  
+	DateCreated,  
+	LastModifiedById,
+	LastModifiedDate
+) 
+values (
+	@PortalId,   
+	@Carrier,	  
+	@Freight,  
+	@CarrierNumber,
+	@AdvertiserName,
+	@Address1,
+	@Address2,
+	@City,
+	@State,
+	@Zip,
+	@Country,
+	@Phone,
+	@Fax,
+	@ClientType,
+	@QuickbooksListId,
+	@QuickbooksEditSequence,
+	@QuickbooksErrNum,
+	@QuickbooksErrMsg,
+	@CustomerReference,
+	@CreatedById,  
+	@DateCreated,  
+	@LastModifiedById,
+	@LastModifiedDate
+)
+
+select SCOPE_identity()
+
+GO
+
+create procedure PMT_Get_AgenciesByPortalId
+
+    @PortalId int
+
+as
+
+select * from   PMT_Agencies
+where  PortalId = @PortalId
+Order By AgencyName
+
+GO
+
+create procedure PMT_Get_AgencyById
+
+    @Id int
+
+as
+
+select * from   PMT_Agencies
+where  Id = @Id
+
+GO
+
+create procedure PMT_DeleteAgency
+
+    @Id int
+
+as
+
+delete
+from   PMT_Agencies
+where  Id = @Id
+
+GO
+
+create procedure PMT_UpdateAgency
+	@Id int,
+	@PortalId int,
+	@AgencyName nvarchar(255),
+	@Address1 nvarchar(255),
+	@Address2 nvarchar(255),
+	@City nvarchar(255),
+	@State nvarchar(20),
+	@Zip nvarchar(20),
+	@Country nvarchar(255),
+	@Phone nvarchar(30),
+	@Fax nvarchar(30),
+	@ClientType int,
+	@Status bit,
+	@CustomerReference nvarchar(255),
+	@AttentionLine nvarchar(255),
+	@CreatedById int,
+	@DateCreated DateTime,
+	@LastModifiedById int,
+	@LastModifiedDate DateTime
+
+as
+
+UPDATE PMT_Agencies
+set		PortalId	   = @PortalId,
+		AgencyName	   = @AgencyName,
+		Address1	   = @Address1,
+		Address2	   = @Address2,
+		City		   = @City,
+		State		   = @State,
+		Zip			= @Zip,
+		Country		   = @Country,
+		Phone		   = @Phone,
+		Fax		   = @Fax,
+		ClientType	   = @ClientType,
+		Status		   = @Status,
+		CustomerReference  = @CustomerReference,
+		AttentionLine = @AttentionLine,
+		CreatedById	   = @CreatedById,
+		DateCreated	   = @DateCreated,
+		LastModifiedById   = @LastModifiedById,
+		LastModifiedDate   = @LastModifiedDate
+WHERE Id = @Id
+
+GO
+
+
+create procedure PMT_AddAgency
+
+	@PortalId int,
+	@AgencyName nvarchar(255),
+	@Address1 nvarchar(255),
+	@Address2 nvarchar(255),
+	@City nvarchar(255),
+	@State nvarchar(20),
+	@Zip nvarchar(20),
+	@Country nvarchar(255),
+	@Phone nvarchar(30),
+	@Fax nvarchar(30),
+	@ClientType int,
+	@Status bit,
+	@CustomerReference nvarchar(255),
+	@AttentionLine nvarchar(255),
+	@CreatedById int,
+	@DateCreated DateTime,
+	@LastModifiedById int,
+	@LastModifiedDate DateTime
+
+as
+
+insert into PMT_Agencies (
+	PortalId,
+	AgencyName,
+	Address1,
+	Address2,
+	City,
+	State,
+	Zip,
+	Country,
+	Phone,
+	Fax,
+	ClientType,
+	Status,
+	CustomerReference,
+	AttentionLine,
+	CreatedById,
+	DateCreated,
+	LastModifiedById,
+	LastModifiedDate
+) 
+values (
+	@PortalId,
+	@AgencyName,
+	@Address1,
+	@Address2,
+	@City,
+	@State,
+	@Zip,
+	@Country,
+	@Phone,
+	@Fax,
+	@ClientType,
+	@Status,
+	@CustomerReference,
+	@AttentionLine,
+	@CreatedById,
+	@DateCreated,
+	@LastModifiedById,
+	@LastModifiedDate
+)
+
+select SCOPE_identity()
+
+GO

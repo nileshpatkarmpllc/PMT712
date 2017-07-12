@@ -1,0 +1,463 @@
+﻿using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Configuration;
+using System.Web;
+using System.Web.Services;
+using System.Web.Services.Protocols;
+using System.ComponentModel;
+using System.Data;
+using System.Diagnostics;
+using System.IO;
+using System.Security.Cryptography;
+using Microsoft.Win32;
+using System.Xml;
+using System.Text.RegularExpressions;
+using System.Net;
+using System.Collections;
+using DotNetNuke.Services.Exceptions;
+
+namespace Christoc.Modules.PMT_Admin
+{
+    /// <summary>
+    /// Summary description for QBConnect
+    /// </summary>
+    [WebService(
+     Namespace = "http://developer.intuit.com/",
+     Name = "WCECommService",
+     Description = "Sample WebService in ASP.NET to demonstrate " +
+                      "QuickBooks WebConnector")]
+
+    [WebServiceBinding(ConformsTo = WsiProfiles.BasicProfile1_1)]
+    [System.ComponentModel.ToolboxItem(false)]
+    // To allow this Web Service to be called from script, using ASP.NET AJAX, uncomment the following line. 
+    // [System.Web.Script.Services.ScriptService]
+    public class QBConnect : System.Web.Services.WebService
+    {
+        public AdminController aCont = new AdminController();
+
+        [WebMethod]
+        public string[] authenticate(string strUserName, string strPassword)
+        {
+            //try
+            //{
+            //    Session.Remove("req");                
+            //}
+            //catch { }
+            //try
+            //{
+            //    Session.Remove("counter");
+            //}
+            //catch { }
+            string evLogTxt = "WebMethod: authenticate() has been called by QBWebconnector" + Environment.NewLine;
+            evLogTxt = evLogTxt + "Parameters received:" + Environment.NewLine;
+            evLogTxt = evLogTxt + "string strUserName = " + strUserName + Environment.NewLine;
+            evLogTxt = evLogTxt + "string strPassword = " + strPassword + Environment.NewLine;
+            string[] authReturn = new string[2];
+            // Code below uses a random GUID to use as session ticket
+            // An example of a GUID is {85B41BEE-5CD9-427a-A61B-83964F1EB426}
+            authReturn[0] = System.Guid.NewGuid().ToString();
+            // For simplicity of sample, a hardcoded username/password is used.
+            // In real world, you should handle authentication in using a standard way.
+            // For example, you could validate the username/password against an LDAP
+            // or a directory server
+            string username = "PMTQBConnect";//ConfigurationManager.AppSettings["QBUserName"];
+            string pwd = "pmtc0nn3ct!";//ConfigurationManager.AppSettings["QBPassword"];
+            try
+            {
+                username = ConfigurationManager.AppSettings["QBUserName"];
+                pwd = ConfigurationManager.AppSettings["QBPassword"];
+            }
+            catch { }
+            evLogTxt = evLogTxt + "Password locally stored = " + pwd + Environment.NewLine;
+            if (strUserName.ToUpper().Trim().Equals(username.ToUpper()) && strPassword.ToUpper().Trim().Equals(pwd.ToUpper()))
+            {
+                // An empty string for authReturn[1] means asking QBWebConnector
+                // to connect to the company file that is currently openned in QB
+                authReturn[1] = "";
+            }
+            else
+            {
+                authReturn[1] = "nvu";
+            }
+            // You could also return "none" to indicate there is no work to do
+            // or a company filename in the format C:\full\path o\company.qbw
+            // based on your program logic and requirements.
+            evLogTxt = evLogTxt + "Return values: " + Environment.NewLine;
+            evLogTxt = evLogTxt + "string[] authReturn[0] = " + authReturn[0].ToString() + Environment.NewLine;
+            evLogTxt = evLogTxt + "string[] authReturn[1] = " + authReturn[1].ToString() + Environment.NewLine;
+            logEvent(evLogTxt);
+            return authReturn;
+        }
+
+        [WebMethod]
+        public string closeConnection(string ticket)
+        {
+            string evLogTxt = "WebMethod: closeConnection() has been called by QBWebconnector" + Environment.NewLine;
+            evLogTxt = evLogTxt + "Parameters received: " + Environment.NewLine;
+            evLogTxt = evLogTxt + "string ticket = " + ticket + Environment.NewLine;
+            evLogTxt = evLogTxt + Environment.NewLine;
+            string retVal = null;
+            retVal = "OK";
+            evLogTxt = evLogTxt + Environment.NewLine;
+            evLogTxt = evLogTxt + "Return values: " + Environment.NewLine;
+            evLogTxt = evLogTxt + "string retVal= " + retVal + Environment.NewLine;
+            logEvent(evLogTxt);
+            return retVal;
+        }
+        [WebMethod]
+        public string connectionError(string ticket, string hresult, string message)
+        {
+            string evLogTxt = "WebMethod: connectionError() has been called by QBWebconnector" + Environment.NewLine;
+            evLogTxt = evLogTxt + "Parameters received:" + Environment.NewLine;
+            evLogTxt = evLogTxt + "string ticket = " + ticket + Environment.NewLine;
+            evLogTxt = evLogTxt + "string hresult = " + hresult + Environment.NewLine;
+            evLogTxt = evLogTxt + "string message = " + message + Environment.NewLine;
+            evLogTxt = evLogTxt + Environment.NewLine;
+            string retVal = null;
+            // 0x80040400 - QuickBooks found an error when parsing the provided XML text stream.
+            const string QB_ERROR_WHEN_PARSING = "0x80040400";
+            // 0x80040401 - Could not access QuickBooks.
+            const string QB_COULDNT_ACCESS_QB = "0x80040401";
+            // 0x80040402 - Unexpected error. Check the qbsdklog.txt file
+            const string QB_UNEXPECTED_ERROR = "0x80040402";
+            // Add more as you need...
+            if (hresult.Trim().Equals(QB_ERROR_WHEN_PARSING))
+            {
+                evLogTxt = evLogTxt + "HRESULT = " + hresult + Environment.NewLine;
+                evLogTxt = evLogTxt + "Message = " + message + Environment.NewLine;
+                retVal = "DONE";
+            }
+            else if (hresult.Trim().Equals(QB_COULDNT_ACCESS_QB))
+            {
+                evLogTxt = evLogTxt + "HRESULT = " + hresult + Environment.NewLine;
+                evLogTxt = evLogTxt + "Message = " + message + Environment.NewLine;
+                retVal = "DONE";
+            }
+            else if (hresult.Trim().Equals(QB_UNEXPECTED_ERROR))
+            {
+                evLogTxt = evLogTxt + "HRESULT = " + hresult + Environment.NewLine;
+                evLogTxt = evLogTxt + "Message = " + message + Environment.NewLine;
+                retVal = "DONE";
+            }
+            else
+            {
+                // Depending on various hresults return different value
+                // Try again with this company file
+                evLogTxt = evLogTxt + "HRESULT = " + hresult + Environment.NewLine;
+                evLogTxt = evLogTxt + "Message = " + message + Environment.NewLine;
+                retVal = "";
+            }
+            evLogTxt = evLogTxt + Environment.NewLine;
+            evLogTxt = evLogTxt + "Return values: " + Environment.NewLine;
+            evLogTxt = evLogTxt + "string retVal = " + retVal + Environment.NewLine;
+            logEvent(evLogTxt);
+            return retVal;
+        }
+        [WebMethod]
+        public string getLastError(string ticket)
+        {
+            string evLogTxt = "WebMethod: getLastError() has been called by QBWebconnector" + Environment.NewLine;
+            evLogTxt = evLogTxt + "Parameters received:" + Environment.NewLine;
+            evLogTxt = evLogTxt + "string ticket = " + ticket + Environment.NewLine;
+            int errorCode = 0;
+            string retVal = null;
+            if (errorCode == -101)
+            {
+                retVal = "QuickBooks was not running!"; // just an example of custom user errors
+            }
+            else if (Session["requestID"]!=null)
+            {
+                retVal = Session["requestID"].ToString();
+            }
+            else
+            {
+                retVal = "";
+            }
+            evLogTxt = evLogTxt + Environment.NewLine;
+            evLogTxt = evLogTxt + "Return values: " + Environment.NewLine;
+            evLogTxt = evLogTxt + "string retVal= " + retVal + Environment.NewLine;
+            logEvent(evLogTxt);
+            return retVal;
+        }
+        public string getServerVersion(string ticket)
+        {
+            return "1.0";
+        }
+        [WebMethod(Description = "response XML from QuickBooks", EnableSession = true)]
+        public int receiveResponseXML(string ticket, string response, string hresult, string message)
+        {
+            string evLogTxt = "WebMethod: receiveResponseXML() called by QBWebconnector" + Environment.NewLine;
+            evLogTxt = evLogTxt + "Parameters received:" + Environment.NewLine;
+            evLogTxt = evLogTxt + "string ticket = " + ticket + Environment.NewLine;
+            evLogTxt = evLogTxt + "string response = " + response + Environment.NewLine;
+            evLogTxt = evLogTxt + "string hresult = " + hresult + Environment.NewLine;
+            evLogTxt = evLogTxt + "string message = " + message + Environment.NewLine;
+            evLogTxt = evLogTxt + Environment.NewLine;
+            int retVal = 0;
+            if (!hresult.ToString().Equals(""))
+            {
+                // if error in the response, web service should return a negative int
+                evLogTxt = evLogTxt + "HRESULT = " + hresult + Environment.NewLine;
+                evLogTxt = evLogTxt + "Message = " + message + Environment.NewLine;
+                 XmlDocument doc = new XmlDocument();
+                doc.LoadXml(response);
+                XmlElement xelRoot = doc.DocumentElement;
+                if (xelRoot != null)
+                {
+                    XmlNodeList nodes = xelRoot.GetElementsByTagName("InvoiceAddRs");
+                    if (nodes[0] != null)
+                    {
+                        if(nodes[0].Attributes["statusSeverity"].Value.ToLower()=="error")
+                        {
+                            string reqId = nodes[0].Attributes["requestID"].Value;
+                            Session["AddCustomer"] = reqId.Substring(0, reqId.IndexOf("_"));
+                        }
+                    }
+                    else
+                    {
+                        //invoice created
+                        nodes = xelRoot.GetElementsByTagName("TxnNumber");
+                        if(nodes!=null)
+                        {
+                            XmlNodeList invNo = xelRoot.GetElementsByTagName("RefNumber");
+                            if(invNo!=null)
+                            {
+                                InvoiceInfo inv = aCont.Get_InvoiceById(Convert.ToInt32(invNo[0].Value));
+                                if(inv.Id!=-1)
+                                {
+                                    inv.SentToQB = true;
+                                    inv.QBInvoiceNumber = invNo[0].Value;
+                                    inv.LastModifiedDate = DateTime.Now;
+                                    aCont.Update_Invoice(inv);
+                                    List<int> woIds = aCont.Get_WOInsByInvoiceId(inv.Id);
+                                    foreach(int woId in woIds)
+                                    {
+                                        WorkOrderInfo wo = aCont.Get_WorkOrderById(woId);
+                                        wo.InvoiceNumber = inv.QBInvoiceNumber;
+                                        wo.LastModifiedDate = DateTime.Now;
+                                        wo.Status = "INVOICED";
+                                        aCont.Update_WorkOrder(wo);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+                retVal = -101;
+            }
+            else
+            {
+                evLogTxt = evLogTxt + "Length of response received = " + response.Length + Environment.NewLine;
+                ArrayList req = buildRequest(ticket);
+                int total = req.Count;
+                int count = Convert.ToInt32(Session["counter"]);
+                int percentage = (count * 100) / total;
+                if (percentage >= 100)
+                {
+                    count = 0;
+                    Session["counter"] = 0;
+                }
+                retVal = percentage;
+            }
+            evLogTxt = evLogTxt + Environment.NewLine;
+            evLogTxt = evLogTxt + "Return values: " + Environment.NewLine;
+            evLogTxt = evLogTxt + "int retVal= " + retVal.ToString() + Environment.NewLine;
+            logEvent(evLogTxt);
+            //TODO: Add update workorder to add invoice id
+            return retVal;
+        }
+        [WebMethod(Description = "send request XML ", EnableSession = true)]
+        public string sendRequestXML(string ticket, string strHCPResponse, string strCompanyFileName, string Country, int qbXMLMajorVers, int qbXMLMinorVers)
+        {
+            if (Session["counter"] == null)
+            {
+                Session["counter"] = 0;
+            }
+            string evLogTxt = "WebMethod: sendRequestXML() has been called by QBWebconnector" + Environment.NewLine;
+            evLogTxt = evLogTxt + "Parameters received:" + Environment.NewLine;
+            evLogTxt = evLogTxt + "string ticket = " + ticket + Environment.NewLine;
+            evLogTxt = evLogTxt + "string strHCPResponse = " + strHCPResponse + Environment.NewLine;
+            evLogTxt = evLogTxt + "string strCompanyFileName = " + strCompanyFileName + Environment.NewLine;
+            evLogTxt = evLogTxt + "string Country = " + Country + Environment.NewLine;
+            evLogTxt = evLogTxt + "int qbXMLMajorVers = " + qbXMLMajorVers.ToString() + Environment.NewLine;
+            evLogTxt = evLogTxt + "int qbXMLMinorVers = " + qbXMLMinorVers.ToString() + Environment.NewLine;
+            evLogTxt = evLogTxt + Environment.NewLine;
+            ArrayList req = buildRequest(ticket);
+            string request = "";
+            int total = req.Count;
+            int count = Convert.ToInt32(Session["counter"]);
+            if (count < total)
+            {
+                request = req[count].ToString();
+                evLogTxt = evLogTxt + "sending request no = " + (count + 1) + Environment.NewLine;
+                evLogTxt += req[count].ToString() + Environment.NewLine;
+                logEvent("XML Sent: " + request);
+                Session["counter"] = ((int)Session["counter"]) + 1;
+            }
+            else
+            {
+                count = 0;
+                Session["counter"] = 0;
+                try
+                {
+                    Session.Remove("req");
+                }
+                catch { }
+                try
+                {
+                    Session.Remove("requestID");
+                }
+                catch { }
+                request = "";
+            }
+            evLogTxt = evLogTxt + Environment.NewLine;
+            evLogTxt = evLogTxt + "Return values: " + Environment.NewLine;
+            evLogTxt = evLogTxt + "string request = " + request + Environment.NewLine;
+            if (req.Count > 0)
+            {
+                logEvent(evLogTxt);
+            }
+            return request;
+        }
+        public ArrayList buildRequest(string ticket)
+        {
+            ArrayList req = new ArrayList();
+            if (Session["req"] != null && Session["requestID"]==null)
+            {
+                req = (ArrayList)Session["req"];
+            }
+            else
+            {
+                if(Session["requestID"]!=null)
+                {
+                    req.Add(getCustomerAddXML());
+                    Session.Remove("requestID");
+                }
+                int i = 1;
+                string xmlString = "";
+                List<InvoiceInfo> invs = aCont.Get_InvoicesByToSend();
+                //build array of xml                
+                foreach(InvoiceInfo inv in invs)
+                {
+                    List<int> woIds = aCont.Get_WOInsByInvoiceId(inv.Id);                    
+                    if(woIds.Count>0 && woIds[0]>0)
+                    {
+                        WorkOrderInfo wo1 = aCont.Get_WorkOrderById(woIds[0]);
+                        AdvertiserInfo billto = aCont.Get_AdvertiserById(wo1.BillToId);
+                        if(billto.Id==-1)
+                        {
+                            billto = aCont.Get_AdvertiserById(wo1.AdvertiserId);
+                        }
+                        xmlString += "<?xml version=\"1.0\" encoding=\"utf-8\"?><?qbxml version=\"6.0\"?><QBXML><QBXMLMsgsRq onError=\"stopOnError\">";
+                        xmlString += "<InvoiceAddRq requestID=\"" + billto.Id + "_" + i.ToString() + "\"><InvoiceAdd>";
+                        i++;
+                        xmlString += "<CustomerRef><FullName>" + billto.AdvertiserName + "</FullName></CustomerRef>";
+                        xmlString += "<RefNumber>" + inv.Id.ToString() + "</RefNumber>";
+                        xmlString += "<BillAddress><Addr1>" + billto.AdvertiserName + "</Addr1><Addr2>" + billto.Address1 + " - " + billto.Address2 + "</Addr2><City>" + billto.City + "</City><State>" + billto.State + "</State><PostalCode>" + billto.Zip + "</PostalCode><Country>" + billto.Country + "</Country></BillAddress>";
+                        string po = wo1.PONumber;
+                        if (po == "")
+                        {
+                            try
+                            {
+                                po = wo1.Groups[0].LibraryItems[0].PMTMediaId;
+                            }
+                            catch { }
+                        }
+                        xmlString += "<PONumber>" + po + "</PONumber>";
+                        xmlString += "<FOB>" + inv.Id.ToString() + "</FOB>";
+                        xmlString += "<Memo>This invoice was created by the new OMS.</Memo>";
+                        AgencyInfo ag = aCont.Get_AgencyById(wo1.AgencyId);
+                        xmlString += "<Other>" + ag.AgencyName + "</Other>";
+                        foreach(int woId in woIds)
+                        {
+                            WorkOrderInfo wo = aCont.Get_WorkOrderById(woId);
+                            List<TaskInfo> tasks = aCont.Get_TasksByWOId(wo.Id);
+                            for (int j = 0; j < tasks.Count; j++)
+                            {
+                                TaskInfo task = tasks[j];
+                                if (task.TaskType == GroupTypeEnum.Bundle || task.TaskType == GroupTypeEnum.Delivery)
+                                {
+                                    xmlString += "<InvoiceLineAdd>";
+                                    xmlString += "<ItemRef><FullName>" + task.QBCode + "</FullName></ItemRef>";
+                                    LibraryItemInfo lib = aCont.Get_LibraryItemById(task.LibraryId);
+                                    xmlString += "<Desc>" + lib.Title;
+                                    if (woIds.Count > 1 && j == 0)
+                                    {
+                                        xmlString += " WO " + wo.Id.ToString();
+                                    }
+                                    xmlString += "</Desc>";
+                                    if (task.Quantity == 0)
+                                    {
+                                        task.Quantity = 1;
+                                    }
+                                    xmlString += "<Quantity>" + task.Quantity + "</Quantity>";
+                                    xmlString += "<Other1>" + lib.ProductDescription + "</Other1>";
+                                    xmlString += "<Other2>" + lib.ISCICode + "</Other2></InvoiceLineAdd>";
+                                }
+                                if(task.TaskType != GroupTypeEnum.Delivery)
+                                {
+                                    WOGroupInfo group = aCont.Get_WorkOrderGroupById(task.WOGroupId);
+                                    foreach(ServiceInfo serv in group.Services)
+                                    {
+                                        xmlString += "<InvoiceLineAdd>";
+                                        xmlString += "<ItemRef><FullName>CUSTOMIZATION SPOT</FullName></ItemRef>";
+                                        LibraryItemInfo lib = aCont.Get_LibraryItemById(task.LibraryId);
+                                        xmlString += "<Desc>" + lib.Title;
+                                        if (woIds.Count > 1 && j == 0)
+                                        {
+                                            xmlString += " WO " + wo.Id.ToString();
+                                        }
+                                        xmlString += "</Desc>";
+                                        if (task.Quantity == 0)
+                                        {
+                                            task.Quantity = 1;
+                                        }
+                                        xmlString += "<Quantity>" + task.Quantity + "</Quantity>";
+                                        xmlString += "<Other1>" + lib.ProductDescription + "</Other1>";
+                                        xmlString += "<Other2>" + lib.ISCICode + "</Other2></InvoiceLineAdd>";
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    xmlString += "</InvoiceAdd></InvoiceAddRq></QBXMLMsgsRq></QBXML>";
+                    req.Add(xmlString);
+                }
+                Session["req"] = req;
+            }
+            return req;
+        }
+        public string getCustomerAddXML()
+        {
+            string xmlString = "";
+            if (Session["requestID"] != null)
+            {
+                AdvertiserInfo billTo = aCont.Get_AdvertiserById(Convert.ToInt32(Session["requestID"]));
+                if (billTo.Id != -1)
+                {
+                    xmlString = "<?xml version=\"1.0\" encoding=\"utf-8\"?>";
+                    xmlString += "<?qbxml version=\"2.0\"?>";
+                    xmlString += "<QBXML><QBXMLMsgsRq onError=\"stopOnError\">";
+                    xmlString += "<CustomerAddRq requestID=\"add_" + billTo.Id.ToString() + "\"><CustomerAdd><Name>" + billTo.AdvertiserName + "</Name>";
+                    xmlString += "<CompanyName>" + billTo.AdvertiserName + "</CompanyName><BillAddress>";
+                    xmlString += "<Addr1>" + billTo.Address1 + "</Addr1>";
+                    xmlString += "<Addr2>" + billTo.Address2 + "</Addr2>";
+                    xmlString += "<City>" + billTo.City + "</City>";
+                    xmlString += "<State>" + billTo.State + "</State>";
+                    xmlString += "<PostalCode>" + billTo.Zip + "</PostalCode>";
+                    xmlString += "<Country>" + billTo.Country + "</Country>";
+                    xmlString += "</BillAddress><Phone>" + billTo.Phone + "</Phone>";
+                    xmlString += "<Fax>" + billTo.Fax + "</Fax>";
+                    xmlString += "</CustomerAdd></CustomerAddRq></QBXMLMsgsRq></QBXML>";
+                }
+            }
+            return xmlString;
+        }
+        public void logEvent(string evLogTxt)
+        {
+            DotNetNuke.Services.Log.EventLog.EventLogController eCont = new DotNetNuke.Services.Log.EventLog.EventLogController();
+            eCont.AddLog("QB Log Event", "QB Event Log: " + evLogTxt, DotNetNuke.Services.Log.EventLog.EventLogController.EventLogType.HOST_ALERT);
+        }
+    }
+}

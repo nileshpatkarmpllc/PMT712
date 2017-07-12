@@ -1,0 +1,658 @@
+﻿<dotnetnuke type="Package" version="5.0">
+  <packages><package name="PMT_Admin" type="Module" version="1.1.16">
+  <friendlyName>PMT Admin</friendlyName>
+  <description>Admin functions for PMT</description>
+  <iconFile />
+  <owner>
+    <name />
+    <organization />
+    <url />
+    <email />
+  </owner>
+  <license>The license for this package is not currently included within the installation file, please check with the vendor for full license details.</license>
+  <releaseNotes>Edits to DVD and Tape labels print view</releaseNotes>
+  <components>
+    <component type="Script">
+      <scripts>
+        <basePath>DesktopModules\PMT_Admin</basePath>
+        <script type="Install">
+          <path>Providers\DataProviders\SqlDataProvider</path>
+          <name>00.07.06.SqlDataProvider</name>
+          <version>00.07.06</version>
+        </script>
+        <script type="UnInstall">
+          <path>Providers\DataProviders\SqlDataProvider</path>
+          <name>Uninstall.SqlDataProvider</name>
+          <version>1.1.16</version>
+        </script>
+      </scripts>
+    </component>
+    <component type="Module">
+      <desktopModule>
+        <moduleName>PMT_Admin</moduleName>
+        <foldername>PMT_Admin</foldername>
+        <businessControllerClass />
+        <supportedFeatures />
+        <moduleDefinitions>
+          <moduleDefinition>
+            <friendlyName>PMT Admin</friendlyName>
+            <definitionName>PMT Admin</definitionName>
+            <defaultCacheTime>0</defaultCacheTime>
+            <moduleControls>
+              <moduleControl>
+                <controlKey />
+                <controlSrc>DesktopModules/PMT_Admin/PMT_Admin.ascx</controlSrc>
+                <supportsPartialRendering>False</supportsPartialRendering>
+                <controlTitle />
+                <controlType>View</controlType>
+                <iconFile />
+                <helpUrl />
+                <supportsPopUps>False</supportsPopUps>
+                <viewOrder>0</viewOrder>
+              </moduleControl>
+              <moduleControl>
+                <controlKey>Settings</controlKey>
+                <controlSrc>desktopmodules/pmt_admin/Settings.ascx</controlSrc>
+                <supportsPartialRendering>False</supportsPartialRendering>
+                <controlTitle>Settings</controlTitle>
+                <controlType>View</controlType>
+                <iconFile />
+                <helpUrl />
+                <supportsPopUps>False</supportsPopUps>
+              </moduleControl>
+            </moduleControls>
+          </moduleDefinition>
+          <moduleDefinition>
+            <friendlyName>PMT Check List</friendlyName>
+            <definitionName>PMT Check List</definitionName>
+            <defaultCacheTime>0</defaultCacheTime>
+            <moduleControls>
+              <moduleControl>
+                <controlKey />
+                <controlSrc>desktopmodules/pmt_admin/MasterItemCheckList.ascx</controlSrc>
+                <supportsPartialRendering>False</supportsPartialRendering>
+                <controlTitle />
+                <controlType>View</controlType>
+                <iconFile />
+                <helpUrl />
+                <supportsPopUps>False</supportsPopUps>
+              </moduleControl>
+            </moduleControls>
+          </moduleDefinition>
+          <moduleDefinition>
+            <friendlyName>Agencies</friendlyName>
+            <definitionName>PMT Agencies</definitionName>
+            <defaultCacheTime>0</defaultCacheTime>
+            <moduleControls>
+              <moduleControl>
+                <controlKey />
+                <controlSrc>desktopmodules/pmt_admin/PMT_Agencies.ascx</controlSrc>
+                <supportsPartialRendering>False</supportsPartialRendering>
+                <controlTitle />
+                <controlType>View</controlType>
+                <iconFile />
+                <helpUrl />
+                <supportsPopUps>False</supportsPopUps>
+              </moduleControl>
+            </moduleControls>
+          </moduleDefinition>
+          <moduleDefinition>
+            <friendlyName>Advertisers</friendlyName>
+            <definitionName>PMT Advertisers</definitionName>
+            <defaultCacheTime>0</defaultCacheTime>
+            <moduleControls>
+              <moduleControl>
+                <controlKey />
+                <controlSrc>desktopmodules/pmt_admin/PMT_Advertisers.ascx</controlSrc>
+                <supportsPartialRendering>False</supportsPartialRendering>
+                <controlTitle />
+                <controlType>View</controlType>
+                <iconFile />
+                <helpUrl />
+                <supportsPopUps>False</supportsPopUps>
+              </moduleControl>
+            </moduleControls>
+          </moduleDefinition>
+          <moduleDefinition>
+            <friendlyName>Labels</friendlyName>
+            <definitionName>PMT Labels</definitionName>
+            <defaultCacheTime>0</defaultCacheTime>
+            <moduleControls>
+              <moduleControl>
+                <controlKey />
+                <controlSrc>desktopmodules/pmt_admin/PMT_Labels.ascx</controlSrc>
+                <supportsPartialRendering>False</supportsPartialRendering>
+                <controlTitle />
+                <controlType>View</controlType>
+                <iconFile />
+                <helpUrl />
+                <supportsPopUps>False</supportsPopUps>
+              </moduleControl>
+            </moduleControls>
+          </moduleDefinition>
+          <moduleDefinition>
+            <friendlyName>Users</friendlyName>
+            <definitionName>PMT Users</definitionName>
+            <defaultCacheTime>0</defaultCacheTime>
+            <moduleControls>
+              <moduleControl>
+                <controlKey />
+                <controlSrc>desktopmodules/pmt_admin/PMT_Users.ascx</controlSrc>
+                <supportsPartialRendering>False</supportsPartialRendering>
+                <controlTitle />
+                <controlType>View</controlType>
+                <iconFile />
+                <helpUrl />
+                <supportsPopUps>False</supportsPopUps>
+              </moduleControl>
+            </moduleControls>
+          </moduleDefinition>
+          <moduleDefinition>
+            <friendlyName>Stations</friendlyName>
+            <definitionName>PMT Stations</definitionName>
+            <defaultCacheTime>0</defaultCacheTime>
+            <moduleControls>
+              <moduleControl>
+                <controlKey />
+                <controlSrc>desktopmodules/pmt_admin/PMT_Stations.ascx</controlSrc>
+                <supportsPartialRendering>False</supportsPartialRendering>
+                <controlTitle />
+                <controlType>View</controlType>
+                <iconFile />
+                <helpUrl />
+                <supportsPopUps>False</supportsPopUps>
+              </moduleControl>
+            </moduleControls>
+          </moduleDefinition>
+          <moduleDefinition>
+            <friendlyName>Station Groups</friendlyName>
+            <definitionName>PMT Station Groups</definitionName>
+            <defaultCacheTime>0</defaultCacheTime>
+            <moduleControls>
+              <moduleControl>
+                <controlKey />
+                <controlSrc>desktopmodules/pmt_admin/PMT_StationGroups.ascx</controlSrc>
+                <supportsPartialRendering>False</supportsPartialRendering>
+                <controlTitle />
+                <controlType>View</controlType>
+                <iconFile />
+                <helpUrl />
+                <supportsPopUps>False</supportsPopUps>
+              </moduleControl>
+            </moduleControls>
+          </moduleDefinition>
+          <moduleDefinition>
+            <friendlyName>Master Items</friendlyName>
+            <definitionName>PMT Master Items</definitionName>
+            <defaultCacheTime>0</defaultCacheTime>
+            <moduleControls>
+              <moduleControl>
+                <controlKey />
+                <controlSrc>desktopmodules/pmt_admin/PMT_MasterItems.ascx</controlSrc>
+                <supportsPartialRendering>False</supportsPartialRendering>
+                <controlTitle />
+                <controlType>View</controlType>
+                <iconFile />
+                <helpUrl />
+                <supportsPopUps>False</supportsPopUps>
+              </moduleControl>
+              <moduleControl>
+                <controlKey>Settings</controlKey>
+                <controlSrc>desktopmodules/pmt_admin/PMT_ReportsSettings.ascx</controlSrc>
+                <supportsPartialRendering>False</supportsPartialRendering>
+                <controlTitle>Settings</controlTitle>
+                <controlType>View</controlType>
+                <iconFile />
+                <helpUrl />
+                <supportsPopUps>False</supportsPopUps>
+              </moduleControl>
+            </moduleControls>
+          </moduleDefinition>
+          <moduleDefinition>
+            <friendlyName>Library Items</friendlyName>
+            <definitionName>PMT Library Items</definitionName>
+            <defaultCacheTime>0</defaultCacheTime>
+            <moduleControls>
+              <moduleControl>
+                <controlKey />
+                <controlSrc>desktopmodules/pmt_admin/PMT_LibraryItems.ascx</controlSrc>
+                <supportsPartialRendering>False</supportsPartialRendering>
+                <controlTitle />
+                <controlType>View</controlType>
+                <iconFile />
+                <helpUrl />
+                <supportsPopUps>False</supportsPopUps>
+              </moduleControl>
+              <moduleControl>
+                <controlKey>Settings</controlKey>
+                <controlSrc>desktopmodules/pmt_admin/PMT_ReportsSettings.ascx</controlSrc>
+                <supportsPartialRendering>False</supportsPartialRendering>
+                <controlTitle>Settings</controlTitle>
+                <controlType>View</controlType>
+                <iconFile />
+                <helpUrl />
+                <supportsPopUps>False</supportsPopUps>
+              </moduleControl>
+            </moduleControls>
+          </moduleDefinition>
+          <moduleDefinition>
+            <friendlyName>Work Order</friendlyName>
+            <definitionName>PMT Work Order</definitionName>
+            <defaultCacheTime>0</defaultCacheTime>
+            <moduleControls>
+              <moduleControl>
+                <controlKey />
+                <controlSrc>desktopmodules/pmt_admin/PMT_WorkOrder.ascx</controlSrc>
+                <supportsPartialRendering>False</supportsPartialRendering>
+                <controlTitle />
+                <controlType>View</controlType>
+                <iconFile />
+                <helpUrl />
+                <supportsPopUps>False</supportsPopUps>
+              </moduleControl>
+              <moduleControl>
+                <controlKey>Settings</controlKey>
+                <controlSrc>desktopmodules/pmt_admin/PMT_ReportsSettings.ascx</controlSrc>
+                <supportsPartialRendering>False</supportsPartialRendering>
+                <controlTitle>Settings</controlTitle>
+                <controlType>View</controlType>
+                <iconFile />
+                <helpUrl />
+                <supportsPopUps>False</supportsPopUps>
+              </moduleControl>
+            </moduleControls>
+          </moduleDefinition>
+          <moduleDefinition>
+            <friendlyName>Sidebar</friendlyName>
+            <definitionName>PMT Sidebar</definitionName>
+            <defaultCacheTime>0</defaultCacheTime>
+            <moduleControls>
+              <moduleControl>
+                <controlKey />
+                <controlSrc>desktopmodules/pmt_admin/PMT_SidePanel.ascx</controlSrc>
+                <supportsPartialRendering>False</supportsPartialRendering>
+                <controlTitle />
+                <controlType>View</controlType>
+                <iconFile />
+                <helpUrl />
+                <supportsPopUps>False</supportsPopUps>
+              </moduleControl>
+            </moduleControls>
+          </moduleDefinition>
+          <moduleDefinition>
+            <friendlyName>WORK ORDER LIST</friendlyName>
+            <definitionName>PMT Work Order List</definitionName>
+            <defaultCacheTime>0</defaultCacheTime>
+            <moduleControls>
+              <moduleControl>
+                <controlKey />
+                <controlSrc>desktopmodules/pmt_admin/PMT_ViewWorkOrders.ascx</controlSrc>
+                <supportsPartialRendering>False</supportsPartialRendering>
+                <controlTitle />
+                <controlType>View</controlType>
+                <iconFile />
+                <helpUrl />
+                <supportsPopUps>False</supportsPopUps>
+              </moduleControl>
+              <moduleControl>
+                <controlKey>Settings</controlKey>
+                <controlSrc>desktopmodules/pmt_admin/PMT_ReportsSettings.ascx</controlSrc>
+                <supportsPartialRendering>False</supportsPartialRendering>
+                <controlTitle>Settings</controlTitle>
+                <controlType>View</controlType>
+                <iconFile />
+                <helpUrl />
+                <supportsPopUps>False</supportsPopUps>
+              </moduleControl>
+            </moduleControls>
+          </moduleDefinition>
+          <moduleDefinition>
+            <friendlyName>Reports</friendlyName>
+            <definitionName>PMT Reports</definitionName>
+            <defaultCacheTime>0</defaultCacheTime>
+            <moduleControls>
+              <moduleControl>
+                <controlKey />
+                <controlSrc>desktopmodules/pmt_admin/PMT_Reports.ascx</controlSrc>
+                <supportsPartialRendering>False</supportsPartialRendering>
+                <controlTitle />
+                <controlType>View</controlType>
+                <iconFile />
+                <helpUrl />
+                <supportsPopUps>False</supportsPopUps>
+              </moduleControl>
+              <moduleControl>
+                <controlKey>Settings</controlKey>
+                <controlSrc>desktopmodules/pmt_admin/PMT_ReportsSettings.ascx</controlSrc>
+                <supportsPartialRendering>False</supportsPartialRendering>
+                <controlTitle>Settings</controlTitle>
+                <controlType>View</controlType>
+                <iconFile />
+                <helpUrl />
+                <supportsPopUps>False</supportsPopUps>
+              </moduleControl>
+            </moduleControls>
+          </moduleDefinition>
+          <moduleDefinition>
+            <friendlyName>QuickBooks Codes</friendlyName>
+            <definitionName>PMT_QBCodes</definitionName>
+            <defaultCacheTime>0</defaultCacheTime>
+            <moduleControls>
+              <moduleControl>
+                <controlKey />
+                <controlSrc>desktopmodules/pmt_admin/PMT_QBCodes.ascx</controlSrc>
+                <supportsPartialRendering>False</supportsPartialRendering>
+                <controlTitle />
+                <controlType>View</controlType>
+                <iconFile />
+                <helpUrl />
+                <supportsPopUps>False</supportsPopUps>
+              </moduleControl>
+            </moduleControls>
+          </moduleDefinition>
+          <moduleDefinition>
+            <friendlyName>PMT Import</friendlyName>
+            <definitionName>PMT_Import</definitionName>
+            <defaultCacheTime>0</defaultCacheTime>
+            <moduleControls>
+              <moduleControl>
+                <controlKey />
+                <controlSrc>desktopmodules/pmt_admin/PMT_ImportTool.ascx</controlSrc>
+                <supportsPartialRendering>False</supportsPartialRendering>
+                <controlTitle />
+                <controlType>View</controlType>
+                <iconFile />
+                <helpUrl />
+                <supportsPopUps>False</supportsPopUps>
+              </moduleControl>
+            </moduleControls>
+          </moduleDefinition>
+          <moduleDefinition>
+            <friendlyName>Report Designer</friendlyName>
+            <definitionName>PMT Report Designer</definitionName>
+            <defaultCacheTime>0</defaultCacheTime>
+            <moduleControls>
+              <moduleControl>
+                <controlKey />
+                <controlSrc>desktopmodules/pmt_admin/PMT_ReportDesigner.ascx</controlSrc>
+                <supportsPartialRendering>False</supportsPartialRendering>
+                <controlTitle />
+                <controlType>View</controlType>
+                <iconFile />
+                <helpUrl />
+                <supportsPopUps>False</supportsPopUps>
+              </moduleControl>
+              <moduleControl>
+                <controlKey>Settings</controlKey>
+                <controlSrc>desktopmodules/pmt_admin/PMT_ReportsSettings.ascx</controlSrc>
+                <supportsPartialRendering>False</supportsPartialRendering>
+                <controlTitle>Settings</controlTitle>
+                <controlType>View</controlType>
+                <iconFile />
+                <helpUrl />
+                <supportsPopUps>False</supportsPopUps>
+              </moduleControl>
+            </moduleControls>
+          </moduleDefinition>
+          <moduleDefinition>
+            <friendlyName>Update Addresses</friendlyName>
+            <definitionName>PMT Update Addresses</definitionName>
+            <defaultCacheTime>0</defaultCacheTime>
+            <moduleControls>
+              <moduleControl>
+                <controlKey />
+                <controlSrc>desktopmodules/pmt_admin/PMT_UpdateShipping.ascx</controlSrc>
+                <supportsPartialRendering>False</supportsPartialRendering>
+                <controlTitle />
+                <controlType>View</controlType>
+                <iconFile />
+                <helpUrl />
+                <supportsPopUps>False</supportsPopUps>
+              </moduleControl>
+            </moduleControls>
+          </moduleDefinition>
+        </moduleDefinitions>
+      </desktopModule>
+    </component>
+    <component type="Assembly">
+      <assemblies>
+        <basePath>bin</basePath>
+        <assembly>
+          <name>PMT_Admin.dll</name>
+        </assembly>
+      </assemblies>
+    </component>
+    <component type="File">
+      <files>
+        <basePath>DesktopModules\PMT_Admin</basePath>
+        <file>
+          <name>web.Debug.config</name>
+        </file>
+        <file>
+          <name>web.Release.config</name>
+        </file>
+        <file>
+          <path>controls</path>
+          <name>GroupControl.ascx</name>
+        </file>
+        <file>
+          <path>controls</path>
+          <name>PackingSlipDisplay.ascx</name>
+        </file>
+        <file>
+          <path>Documentation</path>
+          <name>Documentation.css</name>
+        </file>
+        <file>
+          <path>Documentation</path>
+          <name>Documentation.html</name>
+        </file>
+        <file>
+          <name>Edit.ascx</name>
+        </file>
+        <file>
+          <path>images</path>
+          <name>arrow_closed.jpg</name>
+        </file>
+        <file>
+          <path>images</path>
+          <name>arrow_open.jpg</name>
+        </file>
+        <file>
+          <path>images</path>
+          <name>checklist_green.png</name>
+        </file>
+        <file>
+          <path>images</path>
+          <name>checklist_grey.png</name>
+        </file>
+        <file>
+          <path>images</path>
+          <name>checklist_red.png</name>
+        </file>
+        <file>
+          <path>images</path>
+          <name>exportToExcel.jpg</name>
+        </file>
+        <file>
+          <path>images</path>
+          <name>loading.gif</name>
+        </file>
+        <file>
+          <path>images</path>
+          <name>play.jpg</name>
+        </file>
+        <file>
+          <path>images</path>
+          <name>remove.jpg</name>
+        </file>
+        <file>
+          <path>images</path>
+          <name>SEARCH-IMAGE.png</name>
+        </file>
+        <file>
+          <name>jquery.switchButton.js</name>
+        </file>
+        <file>
+          <name>License.txt</name>
+        </file>
+        <file>
+          <name>MasterItemCheckList.ascx</name>
+        </file>
+        <file>
+          <name>module.css</name>
+        </file>
+        <file>
+          <name>PMT_Advertisers.ascx</name>
+        </file>
+        <file>
+          <name>PMT_Agencies.ascx</name>
+        </file>
+        <file>
+          <name>PMT_ImportTool.ascx</name>
+        </file>
+        <file>
+          <name>PMT_Labels.ascx</name>
+        </file>
+        <file>
+          <name>PMT_LibraryItems.ascx</name>
+        </file>
+        <file>
+          <name>PMT_MasterItems.ascx</name>
+        </file>
+        <file>
+          <name>PMT_QBCodes.ascx</name>
+        </file>
+        <file>
+          <name>PMT_ReportDesigner.ascx</name>
+        </file>
+        <file>
+          <name>PMT_Reports.ascx</name>
+        </file>
+        <file>
+          <name>PMT_ReportsSettings.ascx</name>
+        </file>
+        <file>
+          <name>PMT_SidePanel.ascx</name>
+        </file>
+        <file>
+          <name>PMT_StationGroups.ascx</name>
+        </file>
+        <file>
+          <name>PMT_Stations.ascx</name>
+        </file>
+        <file>
+          <name>PMT_UpdateShipping.ascx</name>
+        </file>
+        <file>
+          <name>PMT_Users.ascx</name>
+        </file>
+        <file>
+          <name>PMT_ViewWorkOrders.ascx</name>
+        </file>
+        <file>
+          <name>PMT_WorkOrder.ascx</name>
+        </file>
+        <file>
+          <name>ReleaseNotes.txt</name>
+        </file>
+        <file>
+          <path>services</path>
+          <name>PMTService.asmx</name>
+        </file>
+        <file>
+          <path>services</path>
+          <name>QBConnect.asmx</name>
+        </file>
+        <file>
+          <name>Settings.ascx</name>
+        </file>
+        <file>
+          <name>PMT_Admin.ascx</name>
+        </file>
+        <file>
+          <path>styles</path>
+          <name>style.css</name>
+        </file>
+        <file>
+          <name>PMT_Admin.dnn</name>
+        </file>
+        <file>
+          <path>BuildScripts</path>
+          <name>ModulePackage.targets</name>
+        </file>
+        <file>
+          <path>BuildScripts</path>
+          <name>MSBuild.Community.Tasks.Targets</name>
+        </file>
+        <file>
+          <path>App_LocalResources</path>
+          <name>PMT_Admin.ascx.resx</name>
+        </file>
+        <file>
+          <path>App_LocalResources</path>
+          <name>Edit.ascx.resx</name>
+        </file>
+        <file>
+          <path>App_LocalResources</path>
+          <name>Settings.ascx.resx</name>
+        </file>
+        <file>
+          <name>packages.config</name>
+        </file>
+        <file>
+          <path>App_LocalResources</path>
+          <name>PMT_Agencies.ascx.resx</name>
+        </file>
+        <file>
+          <path>App_LocalResources</path>
+          <name>PMT_Advertisers.ascx.resx</name>
+        </file>
+        <file>
+          <path>App_LocalResources</path>
+          <name>PMT_Labels.ascx.resx</name>
+        </file>
+        <file>
+          <path>App_LocalResources</path>
+          <name>PMT_Users.ascx.resx</name>
+        </file>
+        <file>
+          <path>App_LocalResources</path>
+          <name>PMT_Stations.ascx.resx</name>
+        </file>
+        <file>
+          <path>App_LocalResources</path>
+          <name>PMT_StationGroups.ascx.resx</name>
+        </file>
+        <file>
+          <path>App_LocalResources</path>
+          <name>PMT_MasterItems.ascx.resx</name>
+        </file>
+        <file>
+          <path>App_LocalResources</path>
+          <name>PMT_LibraryItems.ascx.resx</name>
+        </file>
+        <file>
+          <path>App_LocalResources</path>
+          <name>PMT_ReportsSettings.ascx.resx</name>
+        </file>
+        <file>
+          <path>App_LocalResources</path>
+          <name>PMT_QBCodes.ascx.resx</name>
+        </file>
+        <file>
+          <path>App_LocalResources</path>
+          <name>PMT_ReportDesigner.ascx.resx</name>
+        </file>
+        <file>
+          <path>services</path>
+          <name>RunReports.ashx</name>
+        </file>
+        <file>
+          <name>web.config</name>
+        </file>
+      </files>
+    </component>
+  </components>
+</package></packages>
+</dotnetnuke>

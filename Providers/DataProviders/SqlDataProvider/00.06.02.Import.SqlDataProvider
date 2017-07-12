@@ -1,0 +1,768 @@
+﻿if exists (select * from dbo.sysobjects where id = object_id(N'PMT_AddAdvertiserForImport') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
+	drop procedure PMT_AddAdvertiserForImport
+GO
+
+if exists (select * from dbo.sysobjects where id = object_id(N'PMT_ClearAdvertisers') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
+	drop procedure PMT_ClearAdvertisers
+GO
+
+if exists (select * from dbo.sysobjects where id = object_id(N'PMT_AddAgencyForImport') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
+	drop procedure PMT_AddAgencyForImport
+GO
+
+if exists (select * from dbo.sysobjects where id = object_id(N'PMT_ClearAgencies') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
+	drop procedure PMT_ClearAgencies
+GO
+
+if exists (select * from dbo.sysobjects where id = object_id(N'PMT_DeleteAdvertiserAgenciesForImport') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
+	drop procedure PMT_DeleteAdvertiserAgenciesForImport
+GO
+
+if exists (select * from dbo.sysobjects where id = object_id(N'PMT_AddLabelForImport') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
+	drop procedure PMT_AddLabelForImport
+GO
+
+if exists (select * from dbo.sysobjects where id = object_id(N'PMT_ClearLabels') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
+	drop procedure PMT_ClearLabels
+GO
+
+if exists (select * from dbo.sysobjects where id = object_id(N'PMT_AddLibraryItemForImport') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
+	drop procedure PMT_AddLibraryItemForImport
+GO
+
+if exists (select * from dbo.sysobjects where id = object_id(N'PMT_ClearLibraryItems') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
+	drop procedure PMT_ClearLibraryItems
+GO
+
+if exists (select * from dbo.sysobjects where id = object_id(N'PMT_AddMasterItemForImport') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
+	drop procedure PMT_AddMasterItemForImport
+GO
+
+if exists (select * from dbo.sysobjects where id = object_id(N'PMT_ClearMasterItems') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
+	drop procedure PMT_ClearMasterItems
+GO
+
+if exists (select * from dbo.sysobjects where id = object_id(N'PMT_ClearMasterItemAgencies') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
+	drop procedure PMT_ClearMasterItemAgencies
+GO
+
+if exists (select * from dbo.sysobjects where id = object_id(N'PMT_AddStationForImport') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
+	drop procedure PMT_AddStationForImport
+GO
+
+if exists (select * from dbo.sysobjects where id = object_id(N'PMT_ClearStations') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
+	drop procedure PMT_ClearStations
+GO
+
+if exists (select * from dbo.sysobjects where id = object_id(N'PMT_AddTaskForImport') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
+	drop procedure PMT_AddTaskForImport
+GO
+
+/******/
+
+create procedure PMT_AddTaskForImport
+	@Id int,
+	@PortalId int,
+	@Description nvarchar(MAX),
+	@WorkOrderId int,
+	@WOGroupId int,
+	@TaskType int,
+	@MasterId int,
+	@LibraryId int,
+	@StationId int,
+	@DeliveryMethodId int,
+	@DeliveryMethod nvarchar(255),
+	@DeliveryMethodResponse nvarchar(MAX),
+	@DeliveryOrderId nvarchar(255),
+	@DeliveryOrderDateCreated DateTime,
+	@DeliveryStatus nvarchar(255),
+	@isComplete bit,
+	@isDeleted bit,
+	@CreatedById int,
+	@DateCreated DateTime,
+	@LastModifiedById int,
+	@LastModifiedDate DateTime,
+	@QBCode nvarchar(255),
+	@QBCodeId int,
+	@DeliveryOrderDateComplete DateTime
+
+as
+BEGIN
+SET IDENTITY_INSERT PMT_WOTasks ON
+insert into PMT_WOTasks (
+	Id,
+	PortalId,
+	Description,
+	WorkOrderId,
+	WOGroupId,
+	TaskType,
+	MasterId,
+	LibraryId,
+	StationId,
+	DeliveryMethodId,
+	DeliveryMethod,
+	DeliveryMethodResponse,
+	DeliveryOrderId,
+	DeliveryOrderDateCreated,
+	DeliveryStatus,
+	isComplete,
+	isDeleted,
+	CreatedById,
+	DateCreated,
+	LastModifiedById,
+	LastModifiedDate,
+	QBCode,
+	QBCodeId,
+	DeliveryOrderDateComplete
+) 
+values (
+	@Id,
+	@PortalId,
+	@Description,
+	@WorkOrderId,
+	@WOGroupId,
+	@TaskType,
+	@MasterId,
+	@LibraryId,
+	@StationId,
+	@DeliveryMethodId,
+	@DeliveryMethod,
+	@DeliveryMethodResponse,
+	@DeliveryOrderId,
+	@DeliveryOrderDateCreated,
+	@DeliveryStatus,
+	@isComplete,
+	@isDeleted,
+	@CreatedById,
+	@DateCreated,
+	@LastModifiedById,
+	@LastModifiedDate,
+	@QBCode,
+	@QBCodeId,
+	@DeliveryOrderDateComplete
+)
+
+select SCOPE_identity()
+SET IDENTITY_INSERT PMT_WOTasks OFF
+END
+GO
+
+create procedure PMT_ClearStations
+
+as
+
+Delete from PMT_Stations
+
+GO
+
+create procedure PMT_AddStationForImport
+	@Id int,
+	@PortalId int,
+	@MarketId int,
+	@StationName nvarchar(255),
+	@StationContact nvarchar(255),
+	@CallLetter nvarchar(255),
+	@MediaType int,
+	@TapeFormat nvarchar(255),
+	@Address1 nvarchar(255),
+	@Address2 nvarchar(255),
+	@City nvarchar(255),
+	@State nvarchar(255),
+	@Zip nvarchar(255),
+	@Country nvarchar(255),
+	@Phone nvarchar(255),
+	@Fax nvarchar(255),
+	@Email nvarchar(255),
+	@SpecialInstructions text,
+	@DeliveryMethods nvarchar(255),
+	@Online bit,
+	@Status bit,
+	@AttentionLine nvarchar(255),
+	@CreatedById int,
+	@DateCreated DateTime,
+	@LastModifiedById int,
+	@LastModifiedDate DateTime,
+	@ProgramFormat nvarchar(255),
+	@AdDeliveryCallLetters nvarchar(255),
+	@OTSMHDCallLetters nvarchar(255),
+	@OTSMSDCallLetters nvarchar(255),
+	@JavelinCallLetters nvarchar(255),
+	@backupRequired bit
+as
+BEGIN
+SET IDENTITY_INSERT PMT_Stations ON
+
+insert into PMT_Stations (
+	Id,
+	PortalId,
+	MarketId,
+	StationName,
+	StationContact,
+	CallLetter,
+	MediaType,
+	TapeFormat,
+	Address1,
+	Address2,
+	City,
+	State,
+	Zip,
+	Country,
+	Phone,
+	Fax,
+	Email,
+	SpecialInstructions,
+	DeliveryMethods,
+	Online,
+	Status,
+	AttentionLine,
+	CreatedById,
+	DateCreated,
+	LastModifiedById,
+	LastModifiedDate,
+	ProgramFormat,
+	AdDeliveryCallLetters,
+	OTSMHDCallLetters,
+	OTSMSDCallLetters,
+	JavelinCallLetters,
+	backupRequired
+) 
+values (
+	@Id,
+	@PortalId,
+	@MarketId,
+	@StationName,
+	@StationContact,
+	@CallLetter,
+	@MediaType,
+	@TapeFormat,
+	@Address1,
+	@Address2,
+	@City,
+	@State,
+	@Zip,
+	@Country,
+	@Phone,
+	@Fax,
+	@Email,
+	@SpecialInstructions,
+	@DeliveryMethods,
+	@Online,
+	@Status,
+	@AttentionLine,
+	@CreatedById,
+	@DateCreated,
+	@LastModifiedById,
+	@LastModifiedDate,
+	@ProgramFormat,
+	@AdDeliveryCallLetters,
+	@OTSMHDCallLetters,
+	@OTSMSDCallLetters,
+	@JavelinCallLetters,
+	@backupRequired
+)
+
+select SCOPE_identity()
+SET IDENTITY_INSERT PMT_Stations OFF
+END
+GO
+
+create procedure PMT_ClearMasterItemAgencies
+
+as
+
+Delete from PMT_MasterItemAgencies
+
+GO
+
+create procedure PMT_ClearMasterItems
+
+as
+
+Delete from PMT_MasterItems
+
+GO
+
+create procedure PMT_AddMasterItemForImport
+
+	@Id int,
+	@PortalId int,
+	@Filename nvarchar(255),
+	@AdvertiserId int,
+	@Title nvarchar(255),
+	@MediaType int,
+	@Encode int,
+	@Standard nvarchar(100),
+	@Length nvarchar(100),
+	@CustomerId nvarchar(255),
+	@PMTMediaId nvarchar(255),
+	@Reel int,
+	@TapeCode nvarchar(255),
+	@Position int,
+	@VaultId nvarchar(255),
+	@Location nvarchar(255),
+	@Comment text,
+	@ClosedCaptioned bit,
+	@CreatedById int,
+	@DateCreated DateTime,
+	@LastModifiedById int,
+	@LastModifiedDate DateTime,
+	@CheckListForm varchar(MAX),
+	@isApproved bit,
+	@BillToId int
+
+as
+BEGIN
+SET IDENTITY_INSERT PMT_MasterItems ON
+
+insert into PMT_MasterItems (
+	Id,
+	PortalId,
+	Filename,
+	AdvertiserId,
+	Title,
+	MediaType,
+	Encode,
+	Standard,
+	Length,
+	CustomerId,
+	PMTMediaId,
+	Reel,
+	TapeCode,
+	Position,
+	VaultId,
+	Location,
+	Comment,
+	ClosedCaptioned,
+	CreatedById,
+	DateCreated,
+	LastModifiedById,
+	LastModifiedDate,
+	CheckListForm,
+	isApproved,
+	BillToId
+) 
+values (
+	@Id,
+	@PortalId,
+	@Filename,
+	@AdvertiserId,
+	@Title,
+	@MediaType,
+	@Encode,
+	@Standard,
+	@Length,
+	@CustomerId,
+	@PMTMediaId,
+	@Reel,
+	@TapeCode,
+	@Position,
+	@VaultId,
+	@Location,
+	@Comment,
+	@ClosedCaptioned,
+	@CreatedById,
+	@DateCreated,
+	@LastModifiedById,
+	@LastModifiedDate,
+	@CheckListForm,
+	@isApproved,
+	@BillToId
+)
+
+select SCOPE_identity()
+SET IDENTITY_INSERT PMT_MasterItems OFF
+END
+GO
+
+create procedure PMT_ClearLibraryItems
+
+as
+
+Delete from PMT_LibraryItems
+
+GO
+
+create procedure PMT_AddLibraryItemForImport
+
+	@Id int,
+	@PortalId int,
+	@AdvertiserId int,
+	@AgencyId int,
+	@ISCICode nvarchar(255),
+	@Filename nvarchar(255),
+	@Title nvarchar(255),
+	@ProductDescription nvarchar(MAX),
+	@MediaLength nvarchar(100),
+	@MediaType nvarchar(100),
+	@Encode nvarchar(100),
+	@Standard nvarchar(100),
+	@CustomerReference nvarchar(255),
+	@PMTMediaId nvarchar(255),
+	@MasterId int,
+	@DateCreated DateTime,
+	@MediaIndex int,
+	@Reel int,
+	@TapeCode nvarchar(255),
+	@Position int,
+	@VaultId nvarchar(255),
+	@Location nvarchar(255),
+	@Status nvarchar(255),
+	@Comment text,
+	@ClosedCaptioned nvarchar(255),
+	@CreatedById int,
+	@LastModifiedById int,
+	@LastModifiedDate DateTime
+
+as
+BEGIN
+SET IDENTITY_INSERT PMT_LibraryItems ON
+
+insert into PMT_LibraryItems (
+	Id,
+	PortalId,
+	AdvertiserId,
+	AgencyId,
+	ISCICode,
+	Filename,
+	Title,
+	ProductDescription,
+	MediaLength,
+	MediaType,
+	Encode,
+	Standard,
+	CustomerReference,
+	PMTMediaId,
+	MasterId,
+	DateCreated,
+	MediaIndex,
+	Reel,
+	TapeCode,
+	Position,
+	VaultId,
+	Location,
+	Status,
+	Comment,
+	ClosedCaptioned,
+	CreatedById,
+	LastModifiedById,
+	LastModifiedDate
+) 
+values (
+	@Id,
+	@PortalId,
+	@AdvertiserId,
+	@AgencyId,
+	@ISCICode,
+	@Filename,
+	@Title,
+	@ProductDescription,
+	@MediaLength,
+	@MediaType,
+	@Encode,
+	@Standard,
+	@CustomerReference,
+	@PMTMediaId,
+	@MasterId,
+	@DateCreated,
+	@MediaIndex,
+	@Reel,
+	@TapeCode,
+	@Position,
+	@VaultId,
+	@Location,
+	@Status,
+	@Comment,
+	@ClosedCaptioned,
+	@CreatedById,
+	@LastModifiedById,
+	@LastModifiedDate
+)
+
+select SCOPE_identity()
+SET IDENTITY_INSERT PMT_LibraryItems OFF
+END
+GO
+
+create procedure PMT_ClearLabels
+
+as
+
+Delete from PMT_Labels
+
+GO
+
+create procedure PMT_AddLabelForImport
+
+	@Id int,
+	@PortalId int,
+	@UserType nvarchar(255),
+	@UserId int,
+	@CampaignId int,
+	@AgencyName nvarchar(255),
+	@AgencyId int,
+	@AdvertiserName nvarchar(255),
+	@AdvertiserId int,
+	@TapeFormat int,
+	@Title nvarchar(255),
+	@Description text,
+	@ISCICode nvarchar(255),
+	@PMTMediaId nvarchar(255),
+	@MediaLength nvarchar(255),
+	@Standard nvarchar(50),
+	@LabelNumber bigint,
+	@CampaignMediaId int,
+	@Notes text,
+	@CreatedById int,
+	@DateCreated DateTime,
+	@LastModifiedById int,
+	@LastModifiedDate DateTime
+
+as
+BEGIN
+SET IDENTITY_INSERT PMT_Labels ON
+
+insert into PMT_Labels (
+	Id,
+	PortalId,
+	UserType,
+	UserId,
+	CampaignId,
+	AgencyName,
+	AgencyId,
+	AdvertiserName,
+	AdvertiserId,
+	TapeFormat,
+	Title,
+	Description,
+	ISCICode,
+	PMTMediaId,
+	MediaLength,
+	Standard,
+	LabelNumber,
+	CampaignMediaId,
+	Notes,
+	CreatedById,
+	DateCreated,
+	LastModifiedById,
+	LastModifiedDate
+) 
+values (
+	@Id,
+	@PortalId,
+	@UserType,
+	@UserId,
+	@CampaignId,
+	@AgencyName,
+	@AgencyId,
+	@AdvertiserName,
+	@AdvertiserId,
+	@TapeFormat,
+	@Title,
+	@Description,
+	@ISCICode,
+	@PMTMediaId,
+	@MediaLength,
+	@Standard,
+	@LabelNumber,
+	@CampaignMediaId,
+	@Notes,
+	@CreatedById,
+	@DateCreated,
+	@LastModifiedById,
+	@LastModifiedDate
+)
+
+select SCOPE_identity()
+SET IDENTITY_INSERT PMT_Labels OFF
+END
+GO
+
+create procedure PMT_DeleteAdvertiserAgenciesForImport
+
+
+as
+
+delete from   PMT_AdvertiserAgencies
+
+GO
+
+create procedure PMT_ClearAgencies
+
+as
+
+Delete from PMT_Agencies
+
+GO
+
+create procedure PMT_AddAgencyForImport
+
+	@Id int,
+	@PortalId int,
+	@AgencyName nvarchar(255),
+	@Address1 nvarchar(255),
+	@Address2 nvarchar(255),
+	@City nvarchar(255),
+	@State nvarchar(20),
+	@Zip nvarchar(20),
+	@Country nvarchar(255),
+	@Phone nvarchar(30),
+	@Fax nvarchar(30),
+	@ClientType int,
+	@Status bit,
+	@CustomerReference nvarchar(255),
+	@AttentionLine nvarchar(255),
+	@CreatedById int,
+	@DateCreated DateTime,
+	@LastModifiedById int,
+	@LastModifiedDate DateTime
+
+as
+BEGIN
+SET IDENTITY_INSERT PMT_Agencies ON
+
+insert into PMT_Agencies (
+	Id,
+	PortalId,
+	AgencyName,
+	Address1,
+	Address2,
+	City,
+	State,
+	Zip,
+	Country,
+	Phone,
+	Fax,
+	ClientType,
+	Status,
+	CustomerReference,
+	AttentionLine,
+	CreatedById,
+	DateCreated,
+	LastModifiedById,
+	LastModifiedDate
+) 
+values (
+	@Id,
+	@PortalId,
+	@AgencyName,
+	@Address1,
+	@Address2,
+	@City,
+	@State,
+	@Zip,
+	@Country,
+	@Phone,
+	@Fax,
+	@ClientType,
+	@Status,
+	@CustomerReference,
+	@AttentionLine,
+	@CreatedById,
+	@DateCreated,
+	@LastModifiedById,
+	@LastModifiedDate
+)
+
+select SCOPE_identity()
+SET IDENTITY_INSERT PMT_Agencies OFF
+END
+GO
+
+create procedure PMT_ClearAdvertisers
+
+as
+
+Delete from PMT_Advertisers
+
+GO
+
+create procedure PMT_AddAdvertiserForImport
+
+	@Id int,
+	@PortalId int,
+	@Carrier int,
+	@Freight int,
+	@CarrierNumber nvarchar(255),
+	@AdvertiserName nvarchar(255),
+	@Address1 nvarchar(255),
+	@Address2 nvarchar(255),
+	@City nvarchar(255),
+	@State nvarchar(20),
+	@Zip nvarchar(20),
+	@Country nvarchar(255),
+	@Phone nvarchar(30),
+	@Fax nvarchar(30),
+	@ClientType int,
+	@QuickbooksListId nvarchar(255),
+	@QuickbooksEditSequence nvarchar(255),
+	@QuickbooksErrNum nvarchar(255),
+	@QuickbooksErrMsg nvarchar(255),
+	@CustomerReference nvarchar(255),
+	@CreatedById int,
+	@DateCreated DateTime,
+	@LastModifiedById int,
+	@LastModifiedDate DateTime
+
+as
+
+BEGIN
+SET IDENTITY_INSERT PMT_Advertisers ON
+
+insert into PMT_Advertisers (
+	Id,
+	PortalId,  
+	Carrier,	  
+	Freight,  
+	CarrierNumber,
+	AdvertiserName,
+	Address1,
+	Address2,
+	City,
+	State,
+	Zip,
+	Country,
+	Phone,
+	Fax,
+	ClientType,
+	QuickbooksListId,
+	QuickbooksEditSequence,
+	QuickbooksErrNum,
+	QuickbooksErrMsg,
+	CustomerReference,
+	CreatedById,  
+	DateCreated,  
+	LastModifiedById,
+	LastModifiedDate
+) 
+values (
+	@Id,
+	@PortalId,   
+	@Carrier,	  
+	@Freight,  
+	@CarrierNumber,
+	@AdvertiserName,
+	@Address1,
+	@Address2,
+	@City,
+	@State,
+	@Zip,
+	@Country,
+	@Phone,
+	@Fax,
+	@ClientType,
+	@QuickbooksListId,
+	@QuickbooksEditSequence,
+	@QuickbooksErrNum,
+	@QuickbooksErrMsg,
+	@CustomerReference,
+	@CreatedById,  
+	@DateCreated,  
+	@LastModifiedById,
+	@LastModifiedDate
+)
+
+select SCOPE_identity()
+
+SET IDENTITY_INSERT PMT_Advertisers OFF
+END
+GO
